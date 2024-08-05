@@ -116,12 +116,6 @@ const Sidebar = () => {
             <ListItemButton sx={{ pl: 4 }} component={Link} href="/reports/classes">
               <ListItemText primary="Class Attendance" />
             </ListItemButton>
-            <ListItemButton sx={{ pl: 4 }} component={Link} href="/reports/revenue">
-              <ListItemText primary="Revenue" />
-            </ListItemButton>
-            <ListItemButton sx={{ pl: 4 }} component={Link} href="/reports/financial">
-              <ListItemText primary="Financial Tracking" />
-            </ListItemButton>
           </List>
         </Collapse>
       </List>
