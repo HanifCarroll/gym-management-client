@@ -1,4 +1,15 @@
-import styles from "./page.module.css";
+'use client';
+
+import React from 'react';
+import {
+  Typography,
+  Grid,
+  Paper,
+  Button,
+  List,
+  ListItem,
+  ListItemText
+} from '@mui/material';
 
 export default function Home() {
   // Mock data - replace with actual data fetching logic
@@ -13,57 +24,99 @@ export default function Home() {
   ];
 
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <h1>Gym Management Dashboard</h1>
-      </div>
-
-      <div className={styles.grid}>
-        {/* Quick Stats */}
-        <div className={styles.card}>
-          <h2>Total Members</h2>
-          <p>{totalMembers}</p>
-        </div>
-        <div className={styles.card}>
-          <h2>Active Classes</h2>
-          <p>{activeClasses}</p>
-        </div>
-        <div className={styles.card}>
-          <h2>Monthly Revenue</h2>
-          <p>${monthlyRevenue}</p>
-        </div>
-        <div className={styles.card}>
-          <h2>Quick Actions</h2>
-          <p>
-            <button>Add Member</button>
-            <button>Create Class</button>
-          </p>
-        </div>
-
-        {/* Upcoming Classes */}
-        <div className={`${styles.card} ${styles.largeCard}`}>
-          <h2>Upcoming Classes</h2>
-          <ul>
-            {upcomingClasses.map((cls) => (
-              <li key={cls.id}>
-                {cls.name} - {cls.time} - {cls.instructor}
-              </li>
-            ))}
-          </ul>
-          <button>View All Classes</button>
-        </div>
-
-        {/* Recent Activity */}
-        <div className={`${styles.card} ${styles.largeCard}`}>
-          <h2>Recent Activity</h2>
-          <ul>
-            <li>New member registration - John Doe - 5 minutes ago</li>
-            <li>Class cancelled - Spin Class - 30 minutes ago</li>
-            <li>Payment received - Jane Smith - 1 hour ago</li>
-          </ul>
-          <button>View All Activity</button>
-        </div>
-      </div>
-    </main>
+    <div>
+      <Typography variant="h4" gutterBottom>
+        Dashboard
+      </Typography>
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={6} md={3}>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+            <Typography component="h2" variant="h6" color="primary" gutterBottom>
+              Total Members
+            </Typography>
+            <Typography component="p" variant="h4">
+              {totalMembers}
+            </Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+            <Typography component="h2" variant="h6" color="primary" gutterBottom>
+              Active Classes
+            </Typography>
+            <Typography component="p" variant="h4">
+              {activeClasses}
+            </Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+            <Typography component="h2" variant="h6" color="primary" gutterBottom>
+              Monthly Revenue
+            </Typography>
+            <Typography component="p" variant="h4">
+              ${monthlyRevenue}
+            </Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+            <Typography component="h2" variant="h6" color="primary" gutterBottom>
+              Quick Actions
+            </Typography>
+            <Button variant="contained" color="primary" sx={{ mb: 1 }}>
+              Add Member
+            </Button>
+            <Button variant="contained" color="secondary">
+              Create Class
+            </Button>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+            <Typography component="h2" variant="h6" color="primary" gutterBottom>
+              Upcoming Classes
+            </Typography>
+            <List>
+              {upcomingClasses.map((cls) => (
+                <ListItem key={cls.id}>
+                  <ListItemText
+                    primary={cls.name}
+                    secondary={`${cls.time} - ${cls.instructor}`}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+            <Typography component="h2" variant="h6" color="primary" gutterBottom>
+              Recent Activity
+            </Typography>
+            <List>
+              <ListItem>
+                <ListItemText
+                  primary="New member registration"
+                  secondary="John Doe - 5 minutes ago"
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemText
+                  primary="Class cancelled"
+                  secondary="Spin Class - 30 minutes ago"
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemText
+                  primary="Payment received"
+                  secondary="Jane Smith - 1 hour ago"
+                />
+              </ListItem>
+            </List>
+          </Paper>
+        </Grid>
+      </Grid>
+    </div>
   );
 }
