@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { apiClient } from '@/app/services/axios-client.api';
+import { apiClient } from '@/services/axios-client.api';
 
 
 const getInstructors = async () => {

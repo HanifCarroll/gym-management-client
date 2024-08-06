@@ -14,7 +14,7 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { useCreateMember } from '@/app/services';
+import { useCreateMember } from '../../../services';
 
 interface FormData {
   firstName: string;
