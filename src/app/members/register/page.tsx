@@ -1,31 +1,51 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
 import {
-  Typography,
-  TextField,
-  Button,
   Box,
+  Button,
   FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Grid,
-  Paper
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  SelectChangeEvent,
+  TextField,
+  Typography
 } from '@mui/material';
+import { useCreateMember } from '@/app/services';
+
+interface FormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address: string;
+  membershipPlanId: string;
+}
+
+const EMPTY_FORM = {
+  address: '',
+  email: '',
+  firstName: '',
+  lastName: '',
+  membershipPlanId: '',
+  phone: '',
+}
 
 export default function RegisterMember() {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    dateOfBirth: '',
-    address: '',
-    membershipType: '',
+  const [ formData, setFormData ] = useState<FormData>({
+    firstName: 'Hanif',
+    lastName: 'Carroll',
+    email: 'hanifcarroll@gmail.com',
+    phone: '9412865903',
+    address: '2112 Lucky Street',
+    membershipPlanId: '1',
   });
+  const { mutateAsync: createMember } = useCreateMember();
 
-  const handleChange = (event) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent) => {
     const { name, value } = event.target;
     setFormData(prevData => ({
       ...prevData,
@@ -33,11 +53,10 @@ export default function RegisterMember() {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Here you would typically send the data to your backend
-    console.log('Form submitted:', formData);
-    // Reset form or redirect user after successful submission
+    await createMember({ ...formData, membershipPlanId: parseInt(formData.membershipPlanId, 10) });
+    setFormData(EMPTY_FORM);
   };
 
   return (
@@ -92,18 +111,6 @@ export default function RegisterMember() {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Date of Birth"
-                name="dateOfBirth"
-                type="date"
-                value={formData.dateOfBirth}
-                onChange={handleChange}
-                InputLabelProps={{ shrink: true }}
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
                 label="Address"
                 name="address"
                 value={formData.address}
@@ -118,13 +125,13 @@ export default function RegisterMember() {
                 <InputLabel>Membership Type</InputLabel>
                 <Select
                   name="membershipType"
-                  value={formData.membershipType}
+                  value={formData.membershipPlanId}
                   onChange={handleChange}
                   label="Membership Type"
                 >
-                  <MenuItem value="basic">Basic</MenuItem>
-                  <MenuItem value="premium">Premium</MenuItem>
-                  <MenuItem value="vip">VIP</MenuItem>
+                  <MenuItem value="1">Basic</MenuItem>
+                  <MenuItem value="2">Premium</MenuItem>
+                  <MenuItem value="3">VIP</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
