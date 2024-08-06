@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/services/axios-client.api';
+import { Member } from '@/entities/member';
 
 
 const getMembers = async () => {
@@ -27,7 +28,7 @@ const deleteMember = async (id: number) => {
   return response.data;
 };
 
-export const useMembers = () => useQuery({ queryKey: [ 'members' ], queryFn: getMembers },);
+export const useMembers = () => useQuery<Member[]>({ queryKey: [ 'members' ], queryFn: getMembers },);
 
 export const useMember = (id: number) => useQuery({
   queryKey: [ 'member', id ],
