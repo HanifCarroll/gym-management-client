@@ -1,9 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/services/axios-client.api';
+import { Instructor } from '@/entities/instructor';
 
 
 const getInstructors = async () => {
-  const response = await apiClient.get('/instructors');
+  const response = await apiClient.get<Instructor[]>('/instructors');
   return response.data;
 };
 

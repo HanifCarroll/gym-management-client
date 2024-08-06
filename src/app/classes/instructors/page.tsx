@@ -1,45 +1,54 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  Button,
   TextField,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Typography,
-  Box
+  Typography
 } from '@mui/material';
-import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
+import { Instructor } from '@/entities/instructor';
+import { useCreateInstructor, useDeleteInstructor, useInstructors, useUpdateInstructor } from '@/services';
 
-// Mock data for demonstration purposes
-const mockInstructors = [
-  { id: 1, name: 'John Doe', email: 'john@example.com', phone: '123-456-7890', specialties: 'Yoga, Pilates' },
-  { id: 2, name: 'Jane Smith', email: 'jane@example.com', phone: '098-765-4321', specialties: 'HIIT, Strength Training' },
-  { id: 3, name: 'Mike Johnson', email: 'mike@example.com', phone: '555-555-5555', specialties: 'Zumba, Dance Fitness' },
-];
+interface FormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+}
+
+const EMPTY_FORM = {
+  instructorId: 0,
+  email: '',
+  firstName: '',
+  lastName: '',
+  phone: '',
+}
+
 
 const InstructorsPage = () => {
-  const [instructors, setInstructors] = useState(mockInstructors);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [editingInstructor, setEditingInstructor] = useState(null);
+  const [ openDialog, setOpenDialog ] = useState(false);
+  const [ editingInstructor, setEditingInstructor ] = useState<Instructor | null>(null);
+  const { data: instructors = [] } = useInstructors();
+  const { mutateAsync: createInstructor } = useCreateInstructor();
+  const { mutateAsync: updateInstructor } = useUpdateInstructor();
+  const { mutateAsync: deleteInstructor } = useDeleteInstructor();
 
-  useEffect(() => {
-    // In a real application, you would fetch instructors data from an API here
-    // setInstructors(fetchedInstructors);
-  }, []);
-
-  const handleOpenDialog = (instructor = null) => {
-    setEditingInstructor(instructor || { name: '', email: '', phone: '', specialties: '' });
+  const handleOpenDialog = (instructor: Instructor | null = null) => {
+    setEditingInstructor(instructor || EMPTY_FORM);
     setOpenDialog(true);
   };
 
@@ -48,27 +57,25 @@ const InstructorsPage = () => {
     setEditingInstructor(null);
   };
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setEditingInstructor({ ...editingInstructor, [name]: value });
+    setEditingInstructor(editingInstructor ? { ...editingInstructor, [name]: value } : null);
   };
 
-  const handleSave = () => {
-    if (editingInstructor.id) {
-      // Update existing instructor
-      setInstructors(instructors.map(instructor =>
-        instructor.id === editingInstructor.id ? editingInstructor : instructor
-      ));
+  const handleSave = async () => {
+    if (editingInstructor?.instructorId === 0) {
+      const { instructorId, ...newInstructorWithoutId } = editingInstructor;
+      await createInstructor(newInstructorWithoutId);
+    }
+    if (editingInstructor?.instructorId) {
+      await updateInstructor({ id: editingInstructor.instructorId, data: editingInstructor })
     } else {
-      // Add new instructor
-      setInstructors([...instructors, { ...editingInstructor, id: Date.now() }]);
     }
     handleCloseDialog();
   };
 
-  const handleDelete = (id) => {
-    // In a real application, you would call an API to delete the instructor
-    setInstructors(instructors.filter(instructor => instructor.id !== id));
+  const handleDelete = async (id: number) => {
+    await deleteInstructor(id)
   };
 
   return (
@@ -78,7 +85,7 @@ const InstructorsPage = () => {
         <Button
           variant="contained"
           color="primary"
-          startIcon={<AddIcon />}
+          startIcon={<AddIcon/>}
           onClick={() => handleOpenDialog()}
         >
           Add Instructor
@@ -89,26 +96,26 @@ const InstructorsPage = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
+              <TableCell>First Name</TableCell>
+              <TableCell>Last Name</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Phone</TableCell>
-              <TableCell>Specialties</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {instructors.map((instructor) => (
-              <TableRow key={instructor.id}>
-                <TableCell>{instructor.name}</TableCell>
+              <TableRow key={instructor.instructorId}>
+                <TableCell>{instructor.firstName}</TableCell>
+                <TableCell>{instructor.lastName}</TableCell>
                 <TableCell>{instructor.email}</TableCell>
                 <TableCell>{instructor.phone}</TableCell>
-                <TableCell>{instructor.specialties}</TableCell>
                 <TableCell>
                   <IconButton onClick={() => handleOpenDialog(instructor)} size="small">
-                    <EditIcon />
+                    <EditIcon/>
                   </IconButton>
-                  <IconButton onClick={() => handleDelete(instructor.id)} size="small" color="error">
-                    <DeleteIcon />
+                  <IconButton onClick={() => handleDelete(instructor.instructorId)} size="small" color="error">
+                    <DeleteIcon/>
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -118,16 +125,26 @@ const InstructorsPage = () => {
       </TableContainer>
 
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>{editingInstructor?.id ? 'Edit Instructor' : 'Add New Instructor'}</DialogTitle>
+        <DialogTitle>{editingInstructor?.instructorId ? 'Edit Instructor' : 'Add New Instructor'}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
-            name="name"
-            label="Name"
+            name="firstName"
+            label="First Name"
             type="text"
             fullWidth
-            value={editingInstructor?.name || ''}
+            value={editingInstructor?.firstName || ''}
+            onChange={handleInputChange}
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            name="lastName"
+            label="Last Name"
+            type="text"
+            fullWidth
+            value={editingInstructor?.lastName || ''}
             onChange={handleInputChange}
           />
           <TextField
@@ -146,15 +163,6 @@ const InstructorsPage = () => {
             type="tel"
             fullWidth
             value={editingInstructor?.phone || ''}
-            onChange={handleInputChange}
-          />
-          <TextField
-            margin="dense"
-            name="specialties"
-            label="Specialties"
-            type="text"
-            fullWidth
-            value={editingInstructor?.specialties || ''}
             onChange={handleInputChange}
           />
         </DialogContent>

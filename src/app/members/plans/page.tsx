@@ -28,7 +28,7 @@ import {
 } from '@/services';
 
 
-const MembershipPlans: React.FC = () => {
+const MembershipPlans = () => {
   const [ openDialog, setOpenDialog ] = useState<boolean>(false);
   const [ editingPlan, setEditingPlan ] = useState<MembershipPlan | null>(null);
   const { data: membershipPlans = [] } = useMembershipPlans();
@@ -47,16 +47,12 @@ const MembershipPlans: React.FC = () => {
   };
 
   const handleSave = async () => {
-    if (editingPlan) {
-      if (editingPlan.membershipPlanId) {
-        console.log('edit')
-        await updateMembershipPlan({ id: editingPlan.membershipPlanId, data: editingPlan })
-      } else {
-        console.log('create')
-        await createMembershipPlan(editingPlan);
-      }
-      handleCloseDialog();
+    if (editingPlan?.membershipPlanId) {
+      await updateMembershipPlan({ id: editingPlan.membershipPlanId, data: editingPlan })
+    } else {
+      await createMembershipPlan(editingPlan);
     }
+    handleCloseDialog();
   };
 
   const handleDelete = async (id: number) => {
