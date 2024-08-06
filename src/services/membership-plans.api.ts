@@ -1,9 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/services/axios-client.api';
+import { MembershipPlan } from '@/entities/membership-plan';
 
 
 const getMembershipPlans = async () => {
-  const response = await apiClient.get('/membership-plans');
+  const response = await apiClient.get<MembershipPlan[]>('/membership-plans');
   return response.data;
 };
 
