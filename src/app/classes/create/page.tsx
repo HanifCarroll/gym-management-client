@@ -1,191 +1,191 @@
 'use client';
 
-import React, { useState } from 'react';
-import {
-  TextField,
-  Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Typography,
-  Box,
-  Chip,
-  OutlinedInput,
-  Checkbox,
-  ListItemText,
-  Paper
-} from '@mui/material';
+import React, { ChangeEvent, useState } from 'react';
+import { Box, Button, Grid, MenuItem, Paper, TextField, Typography } from '@mui/material';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { DatePicker, LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
+import { useCreateClass, useInstructors } from '@/services';
+import { format } from 'date-fns';
 
-// Mock data for demonstration purposes
-const mockInstructors = [
-  { id: 1, name: 'John Doe' },
-  { id: 2, name: 'Jane Smith' },
-  { id: 3, name: 'Mike Johnson' },
-];
+interface Instructor {
+  id: string;
+  name: string;
+}
 
-const mockEquipment = [
-  'Yoga Mat', 'Dumbbells', 'Resistance Bands', 'Kettlebells', 'Jump Rope', 'Exercise Ball'
-];
+interface FormData {
+  instructorId: string;
+  className: string;
+  description: string;
+  maxCapacity: string;
+  dayOfWeek: string;
+  startDate: Date | null;
+  endDate: Date | null;
+  startTime: Date | null;
+  endTime: Date | null;
+}
 
-const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const formatClassData = (formData: FormData) => {
+  return {
+    className: formData.className,
+    dayOfWeek: parseInt(formData.dayOfWeek, 10),
+    description: formData.description,
+    endDate: format(new Date(formData.endDate ?? ''), 'yyyy-MM-dd'),
+    endTime: format(new Date(formData.endTime ?? ''), 'HH:mm:ss'),
+    instructorId: formData.instructorId,
+    maxCapacity: parseInt(formData.maxCapacity, 10),
+    startDate: format(new Date(formData.startDate ?? ''), 'yyyy-MM-dd'),
+    startTime: format(new Date(formData.startTime ?? ''), 'HH:mm:ss'),
+  };
+};
 
-const CreateClassPage = () => {
-  const [classData, setClassData] = useState({
-    name: '',
+const NewClassForm = () => {
+  const [ formData, setFormData ] = useState<FormData>({
+    instructorId: '',
+    className: '',
     description: '',
-    instructor: '',
-    capacity: '',
-    duration: '',
-    equipment: [],
-    startDate: '',
-    endDate: '',
-    startTime: '',
-    daysOfWeek: [],
+    maxCapacity: '',
+    dayOfWeek: '',
+    startDate: null,
+    endDate: null,
+    startTime: null,
+    endTime: null,
   });
+  const { mutateAsync: createClass } = useCreateClass();
+  const { data: instructors = [] } = useInstructors();
 
-  const handleInputChange = (event) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setClassData({ ...classData, [name]: value });
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const handleMultiSelectChange = (event) => {
-    const { name, value } = event.target;
-    setClassData({ ...classData, [name]: typeof value === 'string' ? value.split(',') : value });
+  const handleDateChange = (name: keyof FormData) => (value: Date | null) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Here you would typically send the classData to your backend API
-    console.log('Class data submitted:', classData);
-    // Reset form or redirect user after successful submission
+    console.log(formData);
+    await createClass(formatClassData(formData));
   };
 
   return (
-    <Box className="p-4 max-w-2xl mx-auto">
-      <Typography variant="h4" component="h1" className="mb-4">
-        Create New Class
-      </Typography>
-      <Paper elevation={3} className="p-6">
-        <form onSubmit={handleSubmit}>
-          <TextField
-            fullWidth
-            label="Class Name"
-            name="name"
-            value={classData.name}
-            onChange={handleInputChange}
-            margin="normal"
-            required
-          />
-          <TextField
-            fullWidth
-            label="Description"
-            name="description"
-            value={classData.description}
-            onChange={handleInputChange}
-            margin="normal"
-            multiline
-            rows={4}
-          />
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Instructor</InputLabel>
-            <Select
-              name="instructor"
-              value={classData.instructor}
-              onChange={handleInputChange}
-              required
-            >
-              {mockInstructors.map((instructor) => (
-                <MenuItem key={instructor.id} value={instructor.id}>
-                  {instructor.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <TextField
-            fullWidth
-            label="Capacity"
-            name="capacity"
-            type="number"
-            value={classData.capacity}
-            onChange={handleInputChange}
-            margin="normal"
-            required
-          />
-          <TextField
-            fullWidth
-            label="Duration (minutes)"
-            name="duration"
-            type="number"
-            value={classData.duration}
-            onChange={handleInputChange}
-            margin="normal"
-            required
-          />
-          <TextField
-            fullWidth
-            label="Start Date"
-            name="startDate"
-            type="date"
-            value={classData.startDate}
-            onChange={handleInputChange}
-            margin="normal"
-            InputLabelProps={{ shrink: true }}
-            required
-          />
-          <TextField
-            fullWidth
-            label="End Date"
-            name="endDate"
-            type="date"
-            value={classData.endDate}
-            onChange={handleInputChange}
-            margin="normal"
-            InputLabelProps={{ shrink: true }}
-            required
-          />
-          <TextField
-            fullWidth
-            label="Start Time"
-            name="startTime"
-            type="time"
-            value={classData.startTime}
-            onChange={handleInputChange}
-            margin="normal"
-            InputLabelProps={{ shrink: true }}
-            required
-          />
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Days of Week</InputLabel>
-            <Select
-              multiple
-              name="daysOfWeek"
-              value={classData.daysOfWeek}
-              onChange={handleMultiSelectChange}
-              input={<OutlinedInput label="Days of Week" />}
-              renderValue={(selected) => selected.join(', ')}
-            >
-              {daysOfWeek.map((day) => (
-                <MenuItem key={day} value={day}>
-                  <Checkbox checked={classData.daysOfWeek.indexOf(day) > -1} />
-                  <ListItemText primary={day} />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            size="large"
-            className="mt-4"
-          >
-            Create Class
-          </Button>
-        </form>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
+        <Typography variant="h6" gutterBottom>
+          Create New Class
+        </Typography>
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                select
+                name="instructorId"
+                label="Instructor"
+                value={formData.instructorId}
+                onChange={handleChange}
+                fullWidth
+                required
+              >
+                {instructors.map((instructor) => (
+                  <MenuItem key={instructor.instructorId} value={instructor.instructorId}>
+                    {instructor.firstName} {instructor.lastName}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                name="className"
+                label="Class Name"
+                value={formData.className}
+                onChange={handleChange}
+                fullWidth
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                name="description"
+                label="Description"
+                value={formData.description}
+                onChange={handleChange}
+                fullWidth
+                multiline
+                rows={4}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                name="maxCapacity"
+                label="Max Capacity"
+                type="number"
+                value={formData.maxCapacity}
+                onChange={handleChange}
+                fullWidth
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                name="dayOfWeek"
+                label="Day of Week"
+                select
+                value={formData.dayOfWeek}
+                onChange={handleChange}
+                fullWidth
+                required
+              >
+                {[ 0, 1, 2, 3, 4, 5, 6 ].map((day) => (
+                  <MenuItem key={day} value={day.toString()}>
+                    {[ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ][day]}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <DatePicker
+                label="Start Date"
+                value={formData.startDate}
+                onChange={handleDateChange('startDate')}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <DatePicker
+                label="End Date"
+                value={formData.endDate}
+                onChange={handleDateChange('endDate')}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TimePicker
+                label="Start Time"
+                value={formData.startTime}
+                onChange={handleDateChange('startTime')}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TimePicker
+                label="End Time"
+                value={formData.endTime}
+                onChange={handleDateChange('endTime')}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button type="submit" variant="contained" color="primary" fullWidth>
+                Create Class
+              </Button>
+            </Grid>
+          </Grid>
+        </Box>
       </Paper>
-    </Box>
+    </LocalizationProvider>
   );
 };
 
-export default CreateClassPage;
+export default NewClassForm;
