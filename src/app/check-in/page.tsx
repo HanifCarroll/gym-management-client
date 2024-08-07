@@ -98,32 +98,35 @@ export default function CheckInPage() {
       headerName: 'Date',
       sortable: true,
       filter: true,
-      valueFormatter: (params: any) => format(parseISO(params.value), 'yyyy-MM-dd')
+      valueFormatter: (params: any) => format(parseISO(params.value), 'yyyy-MM-dd'),
+      cellStyle: { display: 'flex', alignItems: 'center' }
     },
     {
       field: 'dateTime',
       headerName: 'Time',
       sortable: true,
       filter: true,
-      valueFormatter: (params: any) => format(parseISO(params.value), 'HH:mm:ss')
+      valueFormatter: (params: any) => format(parseISO(params.value), 'HH:mm:ss'),
+      cellStyle: { display: 'flex', alignItems: 'center' }
     },
     {
       field: 'member.firstName',
       headerName: 'First Name',
       sortable: true,
-      filter: true
+      filter: true,
+      cellStyle: { display: 'flex', alignItems: 'center' }
     },
     {
       field: 'member.lastName',
       headerName: 'Last Name',
       sortable: true,
-      filter: true
+      filter: true, cellStyle: { display: 'flex', alignItems: 'center' }
     },
     {
       field: 'member.email',
       headerName: 'Email',
       sortable: true,
-      filter: true
+      filter: true, cellStyle: { display: 'flex', alignItems: 'center' }
     },
   ], []);
 
@@ -157,6 +160,7 @@ export default function CheckInPage() {
       <div className="ag-theme-alpine" style={{ height: 400, width: '100%' }}>
         <AgGridReact
           rowData={checkIns}
+          rowHeight={50}
           columnDefs={columnDefs}
           pagination={true}
           paginationPageSize={10}
