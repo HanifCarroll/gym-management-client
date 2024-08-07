@@ -164,6 +164,7 @@ export default function CheckInPage() {
           columnDefs={columnDefs}
           pagination={true}
           paginationPageSize={10}
+          onGridReady={(event) => event.api.sizeColumnsToFit()}
         />
       </div>
       <Snackbar open={openWarning} autoHideDuration={6000} onClose={handleCloseWarning}>
