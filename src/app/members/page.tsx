@@ -28,7 +28,7 @@ import {
 } from '@mui/material';
 import { apiClient } from '@/utils/api';
 
-interface Member {
+export interface Member {
   id: string;
   firstName: string;
   lastName: string;
