@@ -1,6 +1,6 @@
 export * from './attendance.api';
 export * from './auth.api';
-export * from './class-schedules.api';
+export * from './class-instances.api';
 export * from './classes.api';
 export * from './instructors.api';
 export * from './members.api';
