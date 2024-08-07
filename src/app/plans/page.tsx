@@ -118,7 +118,8 @@ const MembershipPlanPage: React.FC = () => {
                 <TableCell>${plan.price.toFixed(2)}</TableCell>
                 <TableCell>
                   <Button onClick={() => handleOpenDialog(plan)}>Edit</Button>
-                  <Button color="error" onClick={() => deleteMutation.mutate(plan.id)}>
+                  <Button color="error"
+                          onClick={() => confirm('All memberships linked to this plan will be deleted.  Are you sure you want to delete this plan? ') ? deleteMutation.mutate(plan.id) : null}>
                     Delete
                   </Button>
                 </TableCell>

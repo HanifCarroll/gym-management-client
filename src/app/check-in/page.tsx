@@ -163,7 +163,7 @@ export default function CheckInPage() {
           rowHeight={50}
           columnDefs={columnDefs}
           pagination={true}
-          paginationPageSize={10}
+          paginationPageSize={20}
           onGridReady={(event) => event.api.sizeColumnsToFit()}
         />
       </div>
