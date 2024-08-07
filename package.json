@@ -17,6 +17,8 @@
     "@stripe/react-stripe-js": "^2.7.3",
     "@stripe/stripe-js": "^4.1.0",
     "@tanstack/react-query": "^5.51.21",
+    "ag-grid-community": "^32.0.2",
+    "ag-grid-react": "^32.0.2",
     "axios": "^1.7.3",
     "date-fns": "^3.6.0",
     "material-react-table": "^2.13.1",
