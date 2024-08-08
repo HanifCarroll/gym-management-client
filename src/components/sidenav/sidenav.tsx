@@ -2,23 +2,25 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Box, Divider, Drawer, List, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import PeopleIcon from '@mui/icons-material/People';
 import PaymentIcon from '@mui/icons-material/Payment';
 import HistoryIcon from '@mui/icons-material/History';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useAuth } from '@/context/auth-context';
 
 const drawerWidth = 240;
 
 const Sidenav = () => {
   const pathname = usePathname();
+  const router = useRouter();
+  const { logout } = useAuth();
 
   const menuItems = [
-    { text: 'Dashboard', icon: <DashboardIcon/>, path: '/' },
     { text: 'Register Member', icon: <PersonAddIcon/>, path: '/register' },
     { text: 'Member List', icon: <PeopleIcon/>, path: '/members' },
     { text: 'Process Payment', icon: <PaymentIcon/>, path: '/payment' },
@@ -26,6 +28,11 @@ const Sidenav = () => {
     { text: 'Membership Plans', icon: <CardMembershipIcon/>, path: '/plans' },
     { text: 'Member Check-in', icon: <HowToRegIcon/>, path: '/check-in' },
   ];
+
+  const handleLogout = () => {
+    logout();
+    router.push('/');
+  };
 
   return (
     <Drawer
@@ -36,6 +43,8 @@ const Sidenav = () => {
         '& .MuiDrawer-paper': {
           width: drawerWidth,
           boxSizing: 'border-box',
+          display: 'flex',
+          flexDirection: 'column',
         },
       }}
     >
@@ -59,6 +68,13 @@ const Sidenav = () => {
             </ListItemButton>
           ))}
         </List>
+      </Box>
+      <Box sx={{ mt: 'auto' }}>
+        <Divider/>
+        <ListItemButton onClick={handleLogout}>
+          <ListItemIcon><LogoutIcon/></ListItemIcon>
+          <ListItemText primary="Logout"/>
+        </ListItemButton>
       </Box>
     </Drawer>
   );

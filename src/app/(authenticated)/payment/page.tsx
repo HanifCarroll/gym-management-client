@@ -19,7 +19,7 @@ import {
   Typography
 } from '@mui/material';
 import { apiClient } from '@/utils/api';
-import { Member } from '@/app/members/page';
+import { Member } from '@/app/(authenticated)/members/page';
 
 const stripePromise = loadStripe('pk_test_51HensUHC8VMbi1DrbdIpmRK7EOZqemmkVmQqv8GAZ5zQ1cP36RAaqsmMMzG88jiTC3E10LZeUSvmMS2V67u7cjiq005WFXSKCP');
 

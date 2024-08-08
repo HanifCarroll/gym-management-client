@@ -19,7 +19,7 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { format, parseISO } from 'date-fns';
 import { apiClient } from '@/utils/api';
-import { Member } from '@/app/members/page';
+import { Member } from '@/app/(authenticated)/members/page';
 import { ColDef } from 'ag-grid-community';
 
 interface CheckIn {

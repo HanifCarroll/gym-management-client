@@ -8,7 +8,7 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-material.css';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/utils/api';
-import { Member } from '@/app/members/page';
+import { Member } from '@/app/(authenticated)/members/page';
 
 
 interface Payment {
