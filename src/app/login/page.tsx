@@ -30,10 +30,9 @@ const LoginPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isAuthenticated()) {
+    if (isAuthenticated) {
       const redirect = searchParams.get('redirect');
       if (redirect && redirect !== '/login') {
-        console.log('re', redirect)
         router.push(redirect); // Redirect to the intended page
       } else {
         router.push('/members'); // Default route after login
@@ -41,7 +40,7 @@ const LoginPage: React.FC = () => {
     }
   }, [ isAuthenticated, searchParams, router ]);
 
-  if (isAuthenticated()) {
+  if (isAuthenticated) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
         <CircularProgress/>

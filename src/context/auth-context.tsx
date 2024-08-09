@@ -1,66 +1,67 @@
-'use client';
-
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { CircularProgress } from '@mui/material';
+import { LoadingAnimation } from '@/components/loading-animation';
 
 interface AuthContextType {
-  isAuthenticated: () => boolean;
+  isAuthenticated: boolean;
   login: () => void;
   logout: () => void;
 }
 
-const defaultAuthContext: AuthContextType = {
-  isAuthenticated: () => false,
-  login: () => {
-  },
-  logout: () => {
-  },
-};
-
-const AuthContext = createContext<AuthContextType>(defaultAuthContext);
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [ isLoading, setIsLoading ] = useState(true);
-
+  const [ isAuthenticated, setIsAuthenticated ] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-  const isAuthenticated = useCallback(() => !!localStorage.getItem('authToken'), []);
 
-  const login = () => {
+  const login = useCallback(() => {
     localStorage.setItem('authToken', 'dummyToken');
-    router.push('/members')
-  };
+    setIsAuthenticated(true);
+    router.push('/members');
+  }, [ router ]);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem('authToken');
+    setIsAuthenticated(false);
     router.push('/login');
-  };
+  }, [ router ]);
 
   useEffect(() => {
-    const tokenExists = isAuthenticated();
+    const checkAuth = () => {
+      const token = localStorage.getItem('authToken');
+      setIsAuthenticated(!!token);
 
-    if (!tokenExists && pathname !== '/login') {
-      // Redirect to the login page with the intended path as a query parameter
-      router.replace(`/login?redirect=${encodeURIComponent(pathname)}`);
-    } else if (tokenExists && pathname === '/login') {
-      router.replace('/members'); // Default authenticated route
-    }
+      if (!token && pathname !== '/login') {
+        router.replace(`/login?redirect=${encodeURIComponent(pathname)}`);
+      } else if (token && pathname === '/login') {
+        router.replace('/members');
+      }
 
-    setIsLoading(false);
-  }, [ isAuthenticated, pathname, router ]);
+      setIsLoading(false);
+    };
+
+    checkAuth();
+  }, [ pathname, router ]);
 
   if (isLoading) {
-    return <CircularProgress/>;
+    return <LoadingAnimation/>
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, }}>
-      {isLoading ? <CircularProgress/> : children}
+    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+      {children}
     </AuthContext.Provider>
   );
 };
 
 export const useAuth = () => {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+
+  return context;
 };

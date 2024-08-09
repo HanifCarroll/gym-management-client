@@ -3,6 +3,7 @@
 import React from 'react';
 import { useAuth } from '@/context/auth-context';
 import Sidenav from '@/components/sidenav/sidenav';
+import { LoadingAnimation } from '@/components/loading-animation';
 
 export default function AuthenticatedLayout({
                                               children,
@@ -12,7 +13,9 @@ export default function AuthenticatedLayout({
   const { isAuthenticated } = useAuth();
 
   if (!isAuthenticated) {
-    return null;
+    return (
+      <LoadingAnimation/>
+    );
   }
 
   return (
