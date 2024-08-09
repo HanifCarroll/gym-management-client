@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/context/auth-context';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Box, Button, CircularProgress, Container, Paper, TextField, Typography } from '@mui/material';
+import { Box, Button, Container, Paper, TextField, Typography } from '@mui/material';
+import { LoadingAnimation } from '@/components/loading-animation';
 
 const LoginPage: React.FC = () => {
   const [ username, setUsername ] = useState('');
@@ -29,22 +30,9 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      const redirect = searchParams.get('redirect');
-      if (redirect && redirect !== '/login') {
-        router.push(redirect); // Redirect to the intended page
-      } else {
-        router.push('/members'); // Default route after login
-      }
-    }
-  }, [ isAuthenticated, searchParams, router ]);
-
   if (isAuthenticated) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <CircularProgress/>
-      </Box>
+      <LoadingAnimation/>
     );
   }
 

@@ -9,7 +9,7 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    if (isAuthenticated()) {
+    if (isAuthenticated) {
       router.replace('/members');
     } else {
       router.replace('/login');

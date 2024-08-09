@@ -33,10 +33,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const token = localStorage.getItem('authToken');
       setIsAuthenticated(!!token);
 
+      // Save the path that the unauthenticated user tried to visit
       if (!token && pathname !== '/login') {
         router.replace(`/login?redirect=${encodeURIComponent(pathname)}`);
-      } else if (token && pathname === '/login') {
-        router.replace('/members');
       }
 
       setIsLoading(false);
