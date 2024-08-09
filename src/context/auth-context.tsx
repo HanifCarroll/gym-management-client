@@ -44,6 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkAuth();
   }, [ pathname, router ]);
 
+  // isLoading is used to prevent the user from seeing a flash of authenticated content on page load.
   if (isLoading) {
     return <LoadingAnimation/>
   }
@@ -57,10 +58,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
-
   return context;
 };
