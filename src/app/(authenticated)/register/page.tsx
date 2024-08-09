@@ -14,15 +14,15 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { MemberData } from '@/types/members/member';
-import { useRegisterMember } from '@/hook/members/useRegisterMember';
+import { MemberData, MemberStatus } from '@/types/member';
+import { useRegisterMember } from '@/hooks/members/useRegisterMember';
 
 const initialFormData: MemberData = {
   firstName: '',
   lastName: '',
   email: '',
   phone: '',
-  status: 'Active',
+  status: MemberStatus.Active,
 };
 
 const RegisterMember: React.FC = () => {
@@ -30,7 +30,7 @@ const RegisterMember: React.FC = () => {
   const registerMemberMutation = useRegisterMember(() => setFormData(initialFormData));
 
   const handleChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<'Active' | 'Inactive' | 'Suspended'>
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<MemberStatus>
   ) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({
@@ -96,9 +96,9 @@ const RegisterMember: React.FC = () => {
               onChange={handleChange}
               label="Status"
             >
-              <MenuItem value="Active">Active</MenuItem>
-              <MenuItem value="Inactive">Inactive</MenuItem>
-              <MenuItem value="Suspended">Suspended</MenuItem>
+              <MenuItem value={MemberStatus.Active}>Active</MenuItem>
+              <MenuItem value={MemberStatus.Inactive}>Inactive</MenuItem>
+              <MenuItem value={MemberStatus.Suspended}>Suspended</MenuItem>
             </Select>
           </FormControl>
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>

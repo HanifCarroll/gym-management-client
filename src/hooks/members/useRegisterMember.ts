@@ -1,7 +1,7 @@
 import { useSnackbar } from '@/context/snackbar-context';
 import { useMutation } from '@tanstack/react-query';
 import { apiClient } from '@/utils/api';
-import { MemberData } from '@/types/members/member';
+import { MemberData } from '@/types/member';
 
 export const useRegisterMember = (onSuccess?: () => void) => {
   const { showSnackbar } = useSnackbar();

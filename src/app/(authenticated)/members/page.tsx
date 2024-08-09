@@ -1,6 +1,6 @@
 'use client';
+
 import React, { useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Alert,
   Box,
@@ -26,54 +26,17 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { apiClient } from '@/utils/api';
+import { Member, MemberStatus } from '@/types/member';
+import { useGetMembers } from '@/hooks/members/useGetMembers';
+import { useUpdateMember } from '@/hooks/members/useUpdateMember';
+import { useDeleteMember } from '@/hooks/members/useDeleteMember';
 
-export interface Member {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  status: 'Active' | 'Inactive' | 'Suspended';
-}
-
-const fetchMembers = async (): Promise<Member[]> => {
-  const { data } = await apiClient.get('members');
-  return data;
-};
-
-const updateMember = async (member: Member): Promise<Member> => {
-  const { data } = await apiClient.patch(`/members/${member.id}`, member);
-  return data;
-};
-
-const deleteMember = async (id: string): Promise<void> => {
-  await apiClient.delete(`members/${id}`);
-};
 
 const ViewAllMembers: React.FC = () => {
   const [ editingMember, setEditingMember ] = useState<Member | null>(null);
-  const queryClient = useQueryClient();
-
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: [ 'members' ],
-    queryFn: fetchMembers,
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: updateMember,
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: [ 'members' ] });
-      setEditingMember(null);
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: deleteMember,
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: [ 'members' ] });
-    },
-  });
+  const { data: members = [], isLoading, isError, error } = useGetMembers();
+  const updateMemberMutation = useUpdateMember(() => setEditingMember(null));
+  const deleteMemberMutation = useDeleteMember();
 
   const handleEditClick = (member: Member) => {
     setEditingMember(member);
@@ -81,7 +44,7 @@ const ViewAllMembers: React.FC = () => {
 
   const handleDeleteClick = (id: string) => {
     if (window.confirm('Are you sure you want to delete this member?')) {
-      deleteMutation.mutate(id);
+      deleteMemberMutation.mutate(id);
     }
   };
 
@@ -92,11 +55,11 @@ const ViewAllMembers: React.FC = () => {
 
   const handleEditSubmit = () => {
     if (editingMember) {
-      updateMutation.mutate(editingMember);
+      updateMemberMutation.mutate(editingMember);
     }
   };
 
-  const handleStatusChange = (event: SelectChangeEvent) => {
+  const handleStatusChange = (event: SelectChangeEvent<MemberStatus>) => {
     const { name, value } = event.target;
     setEditingMember(prev => prev ? { ...prev, [name]: value } : null);
   };
@@ -139,7 +102,7 @@ const ViewAllMembers: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data?.map((member) => (
+            {members.map((member) => (
               <TableRow key={member.id}>
                 <TableCell>{member.firstName}</TableCell>
                 <TableCell>{member.lastName}</TableCell>
@@ -201,13 +164,13 @@ const ViewAllMembers: React.FC = () => {
             <Select
               labelId="status-label"
               name="status"
-              value={editingMember?.status || ''}
+              value={editingMember?.status}
               onChange={handleStatusChange}
               label="Status"
             >
-              <MenuItem value="Active">Active</MenuItem>
-              <MenuItem value="Inactive">Inactive</MenuItem>
-              <MenuItem value="Suspended">Suspended</MenuItem>
+              <MenuItem value={MemberStatus.Active}>Active</MenuItem>
+              <MenuItem value={MemberStatus.Inactive}>Inactive</MenuItem>
+              <MenuItem value={MemberStatus.Suspended}>Suspended</MenuItem>
             </Select>
           </FormControl>
         </DialogContent>
