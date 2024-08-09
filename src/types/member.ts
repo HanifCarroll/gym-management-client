@@ -1,5 +1,5 @@
 export enum MemberStatus {
-  'Active', 'Inactive', 'Suspended'
+  Active = 'Active', Inactive = 'Inactive', Suspended = 'Suspended',
 }
 
 export interface MemberData {

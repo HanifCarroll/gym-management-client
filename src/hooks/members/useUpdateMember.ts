@@ -1,10 +1,23 @@
+import { Member, MemberStatus } from '@/types/member';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiClient } from '@/utils/api';
-import { Member } from '@/types';
 import { useSnackbar } from '@/context/snackbar-context';
+import { apiClient } from '@/utils/api';
+
+const sanitizeMember = (member: Member): Partial<Member> => {
+  const { id, firstName, lastName, email, phone, status } = member;
+  const sanitizedMember = { id, firstName, lastName, email, phone, status };
+
+  // Ensure status is a valid MemberStatus
+  if (!Object.values(MemberStatus).includes(sanitizedMember.status)) {
+    throw new Error('Invalid status');
+  }
+
+  return sanitizedMember;
+};
 
 const updateMember = async (member: Member): Promise<Member> => {
-  const { data } = await apiClient.patch(`/members/${member.id}`, member);
+  const sanitizedMember = sanitizeMember(member);
+  const { data } = await apiClient.patch(`/members/${member.id}`, sanitizedMember);
   return data;
 };
 
@@ -20,8 +33,8 @@ export const useUpdateMember = (onSuccess?: () => void) => {
       onSuccess?.();
     },
     onError: (error) => {
-      showSnackbar('Failed to updated member. Please try again.', 'error');
-      console.error('Error updated member:', error);
+      showSnackbar('Failed to update member. Please try again.', 'error');
+      console.error('Error updating member:', error);
     },
   });
 };
