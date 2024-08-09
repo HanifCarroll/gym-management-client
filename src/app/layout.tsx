@@ -1,10 +1,8 @@
 'use client';
-
 import React from 'react';
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
-import Sidebar from '@/components/sidenav/sidenav';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AuthProvider, useAuth } from '@/context/auth-context';
+import { AuthProvider } from '@/context/auth-context';
 
 const theme = createTheme();
 const queryClient = new QueryClient();
@@ -14,8 +12,6 @@ export default function RootLayout({
                                    }: {
   children: React.ReactNode
 }) {
-  const { isAuthenticated } = useAuth();
-
   return (
     <html lang="en">
     <body>
@@ -23,11 +19,7 @@ export default function RootLayout({
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
           <CssBaseline/>
-          {isAuthenticated ? (
-            <AuthenticatedLayout>{children}</AuthenticatedLayout>
-          ) : (
-            children
-          )}
+          {children}
         </ThemeProvider>
       </QueryClientProvider>
     </AuthProvider>
@@ -35,14 +27,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-const AuthenticatedLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return (
-    <div style={{ display: 'flex' }}>
-      <Sidebar/>
-      <main style={{ flexGrow: 1, padding: '20px' }}>
-        {children}
-      </main>
-    </div>
-  );
-};

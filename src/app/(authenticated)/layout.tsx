@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useAuth } from '@/context/auth-context';
 import Sidenav from '@/components/sidenav/sidenav';
-import { useRouter } from 'next/navigation';
 
 export default function AuthenticatedLayout({
                                               children,
@@ -11,16 +10,9 @@ export default function AuthenticatedLayout({
   children: React.ReactNode
 }) {
   const { isAuthenticated } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/');
-    }
-  }, [ isAuthenticated, router ]);
 
   if (!isAuthenticated) {
-    return null; // or a loading spinner
+    return null;
   }
 
   return (

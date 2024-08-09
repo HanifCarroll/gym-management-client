@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { Box, Divider, Drawer, List, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import PeopleIcon from '@mui/icons-material/People';
@@ -13,35 +13,30 @@ import HowToRegIcon from '@mui/icons-material/HowToReg';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useAuth } from '@/context/auth-context';
 
-const drawerWidth = 240;
+const DRAWER_WIDTH = 240;
+
+const MENU_ITEMS = [
+  { text: 'Register Member', icon: <PersonAddIcon/>, path: '/register' },
+  { text: 'Member List', icon: <PeopleIcon/>, path: '/members' },
+  { text: 'Process Payment', icon: <PaymentIcon/>, path: '/payment' },
+  { text: 'Payment History', icon: <HistoryIcon/>, path: '/payment-history' },
+  { text: 'Membership Plans', icon: <CardMembershipIcon/>, path: '/plans' },
+  { text: 'Member Check-in', icon: <HowToRegIcon/>, path: '/check-in' },
+];
 
 const Sidenav = () => {
   const pathname = usePathname();
-  const router = useRouter();
   const { logout } = useAuth();
 
-  const menuItems = [
-    { text: 'Register Member', icon: <PersonAddIcon/>, path: '/register' },
-    { text: 'Member List', icon: <PeopleIcon/>, path: '/members' },
-    { text: 'Process Payment', icon: <PaymentIcon/>, path: '/payment' },
-    { text: 'Payment History', icon: <HistoryIcon/>, path: '/payment-history' },
-    { text: 'Membership Plans', icon: <CardMembershipIcon/>, path: '/plans' },
-    { text: 'Member Check-in', icon: <HowToRegIcon/>, path: '/check-in' },
-  ];
-
-  const handleLogout = () => {
-    logout();
-    router.push('/');
-  };
 
   return (
     <Drawer
       variant="permanent"
       sx={{
-        width: drawerWidth,
+        width: DRAWER_WIDTH,
         flexShrink: 0,
         '& .MuiDrawer-paper': {
-          width: drawerWidth,
+          width: DRAWER_WIDTH,
           boxSizing: 'border-box',
           display: 'flex',
           flexDirection: 'column',
@@ -56,7 +51,7 @@ const Sidenav = () => {
         </Box>
         <Divider/>
         <List>
-          {menuItems.map((item) => (
+          {MENU_ITEMS.map((item) => (
             <ListItemButton
               key={item.text}
               component={Link}
@@ -71,7 +66,7 @@ const Sidenav = () => {
       </Box>
       <Box sx={{ mt: 'auto' }}>
         <Divider/>
-        <ListItemButton onClick={handleLogout}>
+        <ListItemButton onClick={logout}>
           <ListItemIcon><LogoutIcon/></ListItemIcon>
           <ListItemText primary="Logout"/>
         </ListItemButton>

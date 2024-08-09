@@ -1,14 +1,19 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+'use client';
+
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { CircularProgress } from '@mui/material';
 
 interface AuthContextType {
-  isAuthenticated: boolean;
-  login: (username: string, password: string) => Promise<boolean>;
+  isAuthenticated: () => boolean;
+  login: () => void;
   logout: () => void;
 }
 
 const defaultAuthContext: AuthContextType = {
-  isAuthenticated: false,
-  login: async () => false,
+  isAuthenticated: () => false,
+  login: () => {
+  },
   logout: () => {
   },
 };
@@ -16,31 +21,42 @@ const defaultAuthContext: AuthContextType = {
 const AuthContext = createContext<AuthContextType>(defaultAuthContext);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [ isAuthenticated, setIsAuthenticated ] = useState(false);
+  const [ isLoading, setIsLoading ] = useState(true);
 
-  useEffect(() => {
-    // Check if user is authenticated on initial load
-    const token = localStorage.getItem('authToken');
-    setIsAuthenticated(!!token);
-  }, []);
+  const router = useRouter();
+  const pathname = usePathname();
+  const isAuthenticated = useCallback(() => !!localStorage.getItem('authToken'), []);
 
-  const login = async (username: string, password: string) => {
-    if (username === 'admin' && password === 'password') {
-      localStorage.setItem('authToken', 'dummyToken');
-      setIsAuthenticated(true);
-      return true;
-    }
-    return false;
+  const login = () => {
+    localStorage.setItem('authToken', 'dummyToken');
+    router.push('/members')
   };
 
   const logout = () => {
     localStorage.removeItem('authToken');
-    setIsAuthenticated(false);
+    router.push('/login');
   };
 
+  useEffect(() => {
+    const tokenExists = isAuthenticated();
+
+    if (!tokenExists && pathname !== '/login') {
+      // Redirect to the login page with the intended path as a query parameter
+      router.replace(`/login?redirect=${encodeURIComponent(pathname)}`);
+    } else if (tokenExists && pathname === '/login') {
+      router.replace('/members'); // Default authenticated route
+    }
+
+    setIsLoading(false);
+  }, [ isAuthenticated, pathname, router ]);
+
+  if (isLoading) {
+    return <CircularProgress/>;
+  }
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
-      {children}
+    <AuthContext.Provider value={{ isAuthenticated, login, logout, }}>
+      {isLoading ? <CircularProgress/> : children}
     </AuthContext.Provider>
   );
 };
