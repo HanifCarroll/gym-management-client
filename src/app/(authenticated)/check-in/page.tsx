@@ -7,10 +7,10 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { format, parseISO } from 'date-fns';
 import { ColDef } from 'ag-grid-community';
-import { CheckIn, useCheckIns, useCreateCheckIn } from '@/hooks/useCheckIns';
+import { CheckIn, useCheckIns, useCreateCheckIn } from '@/hooks/check-in-hooks';
 import { Member } from '@/types';
-import { useGetMembers } from '@/hooks/members/useGetMembers';
 import { useSnackbar } from '@/context/snackbar-context';
+import { useGetMembers } from '@/hooks';
 
 const MemberSelect: React.FC<{
   selectedMemberId: string;

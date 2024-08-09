@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, } from '@mui/material';
-import { MembershipPlan, useCreateMembershipPlan, useUpdateMembershipPlan } from '@/hooks/useMembershipPlans';
+import { MembershipPlan, useCreateMembershipPlan, useUpdateMembershipPlan } from '@/hooks/membership-plan-hooks';
 
 interface MembershipPlanDialogProps {
   open: boolean;

@@ -30,9 +30,7 @@ import {
 } from '@mui/material';
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { Member, MemberStatus } from '@/types/member';
-import { useGetMembers } from '@/hooks/members/useGetMembers';
-import { useUpdateMember } from '@/hooks/members/useUpdateMember';
-import { useDeleteMember } from '@/hooks/members/useDeleteMember';
+import { useDeleteMember, useGetMembers, useUpdateMember } from '@/hooks';
 
 const ViewAllMembers: React.FC = () => {
   const [ editingMember, setEditingMember ] = useState<Member | null>(null);

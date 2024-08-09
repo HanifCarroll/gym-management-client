@@ -6,7 +6,7 @@ import { AgGridReact } from 'ag-grid-react';
 import { ColDef } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-material.css';
-import { PaymentWithMember, usePaymentHistory } from '@/hooks/payments/usePaymentHistory';
+import { PaymentWithMember, usePaymentHistory } from '@/hooks';
 
 
 const PaymentHistory: React.FC = () => {

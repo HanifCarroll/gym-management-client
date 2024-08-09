@@ -16,7 +16,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { MembershipPlan, useDeleteMembershipPlan, useMembershipPlans } from '@/hooks/useMembershipPlans';
+import { MembershipPlan, useDeleteMembershipPlan, useMembershipPlans } from '@/hooks/membership-plan-hooks';
 import MembershipPlanDialog from '@/components/membership-plan-dialog';
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 

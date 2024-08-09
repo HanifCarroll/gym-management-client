@@ -15,7 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import { MemberData, MemberStatus } from '@/types/member';
-import { useRegisterMember } from '@/hooks/members/useRegisterMember';
+import { useRegisterMember } from '@/hooks';
 
 const initialFormData: MemberData = {
   firstName: '',
