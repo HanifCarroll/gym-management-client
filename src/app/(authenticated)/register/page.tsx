@@ -14,19 +14,19 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { MemberData, MemberStatus } from '@/types/member';
-import { useRegisterMember } from '@/hooks';
+import { CreateMemberData, MemberStatus } from '@/core/entities';
+import { useRegisterMember } from '@/app/ui/hooks';
 
-const initialFormData: MemberData = {
+const initialFormData: CreateMemberData = {
   firstName: '',
   lastName: '',
   email: '',
   phone: '',
-  status: MemberStatus.Active,
+  status: 'Active',
 };
 
 const RegisterMember: React.FC = () => {
-  const [ formData, setFormData ] = useState<MemberData>(initialFormData);
+  const [ formData, setFormData ] = useState<CreateMemberData>(initialFormData);
   const registerMemberMutation = useRegisterMember(() => setFormData(initialFormData));
 
   const handleChange = (
@@ -96,9 +96,9 @@ const RegisterMember: React.FC = () => {
               onChange={handleChange}
               label="Status"
             >
-              <MenuItem value={MemberStatus.Active}>Active</MenuItem>
-              <MenuItem value={MemberStatus.Inactive}>Inactive</MenuItem>
-              <MenuItem value={MemberStatus.Suspended}>Suspended</MenuItem>
+              <MenuItem value='Active'>Active</MenuItem>
+              <MenuItem value='Inative'>Inactive</MenuItem>
+              <MenuItem value='Suspended'>Suspended</MenuItem>
             </Select>
           </FormControl>
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>

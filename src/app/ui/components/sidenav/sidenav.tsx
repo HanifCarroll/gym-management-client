@@ -11,7 +11,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { useAuth } from '@/context/auth-context';
+import { useAuth } from '@/app/ui/context/auth-context';
 
 const DRAWER_WIDTH = 240;
 

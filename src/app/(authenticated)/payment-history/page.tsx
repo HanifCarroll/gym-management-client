@@ -6,8 +6,9 @@ import { AgGridReact } from 'ag-grid-react';
 import { ColDef } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-material.css';
-import { PaymentWithMember, usePaymentHistory } from '@/hooks';
-import { LoadingAnimation } from '@/components/loading-animation';
+import { usePaymentsWithMembers } from '@/app/ui/hooks';
+import { LoadingAnimation } from '@/app/ui/components';
+import { PaymentWithMember } from '@/core/entities';
 
 
 const columnDefs: ColDef<PaymentWithMember>[] = [
@@ -45,7 +46,7 @@ const defaultColDef: ColDef<PaymentWithMember> = {
 };
 
 const PaymentHistory: React.FC = () => {
-  const { data: rowData, isLoading, error } = usePaymentHistory();
+  const { data: rowData, isLoading, error } = usePaymentsWithMembers();
 
 
   if (isLoading) {

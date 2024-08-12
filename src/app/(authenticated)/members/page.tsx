@@ -29,8 +29,8 @@ import {
   Typography,
 } from '@mui/material';
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
-import { Member, MemberStatus } from '@/types/member';
-import { useDeleteMember, useGetMembers, useUpdateMember } from '@/hooks';
+import { Member, MemberStatus } from '@/core/entities';
+import { useDeleteMember, useGetMembers, useUpdateMember } from '@/app/ui/hooks';
 
 const ViewAllMembers: React.FC = () => {
   const [ editingMember, setEditingMember ] = useState<Member | null>(null);
@@ -53,7 +53,8 @@ const ViewAllMembers: React.FC = () => {
 
   const handleEditSubmit = () => {
     if (editingMember) {
-      updateMemberMutation.mutate(editingMember, {
+      const { createdAt, updatedAt, ...updatedMember } = editingMember;
+      updateMemberMutation.mutate({ id: editingMember.id, data: updatedMember }, {
         onSuccess: () => setEditingMember(null)
       });
     }
@@ -159,13 +160,13 @@ const ViewAllMembers: React.FC = () => {
               <Select<MemberStatus>
                 labelId="status-label"
                 name="status"
-                value={editingMember?.status || MemberStatus.Active}
+                value={editingMember?.status || 'Active'}
                 onChange={handleEditChange}
                 label="Status"
               >
-                <MenuItem value={MemberStatus.Active}>Active</MenuItem>
-                <MenuItem value={MemberStatus.Inactive}>Inactive</MenuItem>
-                <MenuItem value={MemberStatus.Suspended}>Suspended</MenuItem>
+                <MenuItem value='Active'>Active</MenuItem>
+                <MenuItem value='Inactive'>Inactive</MenuItem>
+                <MenuItem value='Suspended'>Suspended</MenuItem>
               </Select>
             </FormControl>
           </Box>

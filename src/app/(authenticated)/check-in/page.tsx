@@ -7,11 +7,10 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { format, parseISO } from 'date-fns';
 import { ColDef } from 'ag-grid-community';
-import { CheckIn, useCheckIns, useCreateCheckIn } from '@/hooks/check-in-hooks';
-import { Member } from '@/types';
-import { useSnackbar } from '@/context/snackbar-context';
-import { useGetMembers } from '@/hooks';
-import { LoadingAnimation } from '@/components/loading-animation';
+import { useCheckIns, useCreateCheckIn, useGetMembers } from '@/app/ui/hooks';
+import { CheckIn, Member } from '@/core/entities';
+import { useSnackbar } from '@/app/ui/context';
+import { LoadingAnimation } from '@/app/ui/components';
 
 
 const columnDefs: ColDef<CheckIn>[] = [

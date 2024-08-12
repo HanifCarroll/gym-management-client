@@ -15,10 +15,10 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { MembershipPlan, useDeleteMembershipPlan, useMembershipPlans } from '@/hooks/membership-plan-hooks';
-import MembershipPlanDialog from '@/components/membership-plan-dialog';
+import { useDeleteMembershipPlan, useMembershipPlans } from '@/app/ui/hooks';
+import { LoadingAnimation, MembershipPlanDialog } from '@/app/ui/components';
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
-import { LoadingAnimation } from '@/components/loading-animation';
+import { MembershipPlan } from '@/core/entities';
 
 const MembershipPlanRow: React.FC<{
   plan: MembershipPlan;

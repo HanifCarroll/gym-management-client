@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, } from '@mui/material';
-import { MembershipPlan, useCreateMembershipPlan, useUpdateMembershipPlan } from '@/hooks/membership-plan-hooks';
+import { useCreateMembershipPlan, useUpdateMembershipPlan } from '@/app/ui/hooks/membership-plan-hooks';
+import { MembershipPlan } from '@/core/entities';
 
 interface MembershipPlanDialogProps {
   open: boolean;
@@ -8,7 +9,7 @@ interface MembershipPlanDialogProps {
   plan: MembershipPlan | null;
 }
 
-const MembershipPlanDialog: React.FC<MembershipPlanDialogProps> = ({ open, onClose, plan }) => {
+export const MembershipPlanDialog: React.FC<MembershipPlanDialogProps> = ({ open, onClose, plan }) => {
   const createMutation = useCreateMembershipPlan();
   const updateMutation = useUpdateMembershipPlan();
 
@@ -22,7 +23,7 @@ const MembershipPlanDialog: React.FC<MembershipPlanDialogProps> = ({ open, onClo
     };
 
     if (plan) {
-      updateMutation.mutate({ ...planData, id: plan.id }, {
+      updateMutation.mutate({ plan: planData, id: plan.id }, {
         onSuccess: onClose
       });
     } else {
@@ -71,5 +72,3 @@ const MembershipPlanDialog: React.FC<MembershipPlanDialogProps> = ({ open, onClo
     </Dialog>
   );
 };
-
-export default MembershipPlanDialog;

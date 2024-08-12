@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useAuth } from '@/context/auth-context';
+import { useAuth } from '@/app/ui/context';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Box, Button, Container, Paper, TextField, Typography } from '@mui/material';
-import { LoadingAnimation } from '@/components/loading-animation';
+import { LoadingAnimation } from '@/app/ui/components';
 
 const LoginPage: React.FC = () => {
   const [ username, setUsername ] = useState('');

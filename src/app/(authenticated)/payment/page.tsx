@@ -16,8 +16,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useSnackbar } from '@/context/snackbar-context';
-import { useConfirmPayment, useGetMembers, useInitiatePayment } from '@/hooks';
+import { useSnackbar } from '@/app/ui/context';
+import { useConfirmPayment, useGetMembers, useInitiatePayment } from '@/app/ui/hooks';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
