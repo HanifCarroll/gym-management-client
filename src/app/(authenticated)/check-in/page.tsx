@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
@@ -11,6 +11,48 @@ import { CheckIn, useCheckIns, useCreateCheckIn } from '@/hooks/check-in-hooks';
 import { Member } from '@/types';
 import { useSnackbar } from '@/context/snackbar-context';
 import { useGetMembers } from '@/hooks';
+import { LoadingAnimation } from '@/components/loading-animation';
+
+
+const columnDefs: ColDef<CheckIn>[] = [
+  {
+    field: 'dateTime',
+    headerName: 'Date',
+    sortable: true,
+    filter: true,
+    valueFormatter: (params: any) => format(parseISO(params.value), 'yyyy-MM-dd'),
+    cellStyle: { display: 'flex', alignItems: 'center' }
+  },
+  {
+    field: 'dateTime',
+    headerName: 'Time',
+    sortable: true,
+    filter: true,
+    valueFormatter: (params: any) => format(parseISO(params.value), 'HH:mm:ss'),
+    cellStyle: { display: 'flex', alignItems: 'center' }
+  },
+  {
+    field: 'member.firstName',
+    headerName: 'First Name',
+    sortable: true,
+    filter: true,
+    cellStyle: { display: 'flex', alignItems: 'center' }
+  },
+  {
+    field: 'member.lastName',
+    headerName: 'Last Name',
+    sortable: true,
+    filter: true,
+    cellStyle: { display: 'flex', alignItems: 'center' }
+  },
+  {
+    field: 'member.email',
+    headerName: 'Email',
+    sortable: true,
+    filter: true,
+    cellStyle: { display: 'flex', alignItems: 'center' }
+  },
+];
 
 const MemberSelect: React.FC<{
   selectedMemberId: string;
@@ -36,45 +78,6 @@ const MemberSelect: React.FC<{
 );
 
 const CheckInGrid: React.FC<{ checkIns: CheckIn[] }> = ({ checkIns }) => {
-  const columnDefs = useMemo<ColDef<CheckIn>[]>(() => [
-    {
-      field: 'dateTime',
-      headerName: 'Date',
-      sortable: true,
-      filter: true,
-      valueFormatter: (params: any) => format(parseISO(params.value), 'yyyy-MM-dd'),
-      cellStyle: { display: 'flex', alignItems: 'center' }
-    },
-    {
-      field: 'dateTime',
-      headerName: 'Time',
-      sortable: true,
-      filter: true,
-      valueFormatter: (params: any) => format(parseISO(params.value), 'HH:mm:ss'),
-      cellStyle: { display: 'flex', alignItems: 'center' }
-    },
-    {
-      field: 'member.firstName',
-      headerName: 'First Name',
-      sortable: true,
-      filter: true,
-      cellStyle: { display: 'flex', alignItems: 'center' }
-    },
-    {
-      field: 'member.lastName',
-      headerName: 'Last Name',
-      sortable: true,
-      filter: true,
-      cellStyle: { display: 'flex', alignItems: 'center' }
-    },
-    {
-      field: 'member.email',
-      headerName: 'Email',
-      sortable: true,
-      filter: true,
-      cellStyle: { display: 'flex', alignItems: 'center' }
-    },
-  ], []);
 
   return (
     <div className="ag-theme-alpine" style={{ height: 400, width: '100%' }}>
@@ -118,8 +121,13 @@ export default function CheckInPage() {
     }
   };
 
-  if (isLoading) return <Typography>Loading...</Typography>;
-  if (isError) return <Typography>An error occurred</Typography>;
+  if (isLoading) {
+    return <LoadingAnimation/>
+  }
+
+  if (isError) {
+    return <Typography>An error occurred</Typography>;
+  }
 
   return (
     <Box sx={{ maxWidth: 1200, margin: 'auto', p: 2 }}>

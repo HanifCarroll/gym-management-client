@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import {
   Button,
-  CircularProgress,
   Container,
   IconButton,
   Paper,
@@ -19,6 +18,7 @@ import {
 import { MembershipPlan, useDeleteMembershipPlan, useMembershipPlans } from '@/hooks/membership-plan-hooks';
 import MembershipPlanDialog from '@/components/membership-plan-dialog';
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
+import { LoadingAnimation } from '@/components/loading-animation';
 
 const MembershipPlanRow: React.FC<{
   plan: MembershipPlan;
@@ -54,7 +54,7 @@ const MembershipPlanPage: React.FC = () => {
   const [ openDialog, setOpenDialog ] = useState(false);
   const [ editingPlan, setEditingPlan ] = useState<MembershipPlan | null>(null);
 
-  const { data: plans, isLoading, isError } = useMembershipPlans();
+  const { data: plans = [], isLoading, isError } = useMembershipPlans();
   const deleteMutation = useDeleteMembershipPlan();
 
   const handleOpenDialog = (plan: MembershipPlan | null = null) => {
@@ -67,8 +67,13 @@ const MembershipPlanPage: React.FC = () => {
     setOpenDialog(false);
   };
 
-  if (isLoading) return <CircularProgress/>;
-  if (isError) return <Typography color="error">Error loading membership plans</Typography>;
+  if (isLoading) {
+    return <LoadingAnimation/>
+  }
+
+  if (isError) {
+    return <Typography color="error">Error loading membership plans</Typography>;
+  }
 
   return (
     <Container maxWidth="md">
@@ -89,7 +94,7 @@ const MembershipPlanPage: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {plans?.map((plan) => (
+            {plans.map((plan) => (
               <MembershipPlanRow
                 key={plan.id}
                 plan={plan}
