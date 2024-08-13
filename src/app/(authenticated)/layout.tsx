@@ -1,9 +1,9 @@
 'use client';
 
-import React from 'react';
-import { useAuth } from '@/app/ui/context/auth-context';
-import Sidenav from '@/app/ui/components/sidenav/sidenav';
 import { LoadingAnimation } from '@/app/ui/components/loading-animation';
+import Sidenav from '@/app/ui/components/sidenav/sidenav';
+import { useAuth } from '@/app/ui/context/auth-context';
+import React from 'react';
 
 export default function AuthenticatedLayout({
   children,

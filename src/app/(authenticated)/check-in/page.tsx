@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import {
   Box,
   Button,
@@ -11,14 +10,15 @@ import {
   SelectChangeEvent,
   Typography,
 } from '@mui/material';
-import { AgGridReact } from 'ag-grid-react';
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-alpine.css';
-import { format, parseISO } from 'date-fns';
-import { ColDef, ValueFormatterParams } from 'ag-grid-community';
-import { CheckIn, Member } from '@/core/entities';
-import { LoadingAnimation } from '@/app/ui/components';
 import { useCheckInPage } from '@/app/(authenticated)/check-in/use-check-in-page';
+import { ColDef, ValueFormatterParams } from 'ag-grid-community';
+import { LoadingAnimation } from '@/app/ui/components';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
+import { CheckIn, Member } from '@/core/entities';
+import 'ag-grid-community/styles/ag-grid.css';
+import { AgGridReact } from 'ag-grid-react';
+import { format, parseISO } from 'date-fns';
+import React from 'react';
 
 const columnDefs: ColDef<CheckIn>[] = [
   {

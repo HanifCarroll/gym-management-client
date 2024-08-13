@@ -1,7 +1,7 @@
-import { AxiosInstance } from 'axios';
 import { CheckIn } from '@/core/entities';
 import { CheckInRepository } from '@/core/repositories';
 import { CHECK_INS_URL } from '@/infrastructure/api-client';
+import { AxiosInstance } from 'axios';
 
 export class ApiCheckInRepository implements CheckInRepository {
   constructor(private apiClient: AxiosInstance) {}

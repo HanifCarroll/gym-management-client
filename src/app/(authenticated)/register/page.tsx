@@ -1,6 +1,5 @@
 'use client';
 
-import React, { ChangeEvent, FormEvent, useState } from 'react';
 import {
   Box,
   Button,
@@ -14,8 +13,9 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { CreateMemberData, MemberStatus } from '@/core/entities';
 import { useRegisterMember } from '@/app/ui/hooks';
+import { CreateMemberData, MemberStatus } from '@/core/entities';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
 
 const initialFormData: CreateMemberData = {
   firstName: '',

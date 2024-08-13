@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Button,
   Dialog,
@@ -12,6 +11,7 @@ import {
   useUpdateMembershipPlan,
 } from '@/app/ui/hooks/membership-plan-hooks';
 import { MembershipPlan } from '@/core/entities';
+import React from 'react';
 
 interface MembershipPlanDialogProps {
   open: boolean;

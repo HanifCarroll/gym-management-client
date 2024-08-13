@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { SelectChangeEvent } from '@mui/material';
 import {
   useCreateCheckIn,
   useGetCheckIns,
   useGetMembers,
   useSnackbar,
 } from '@/app/ui/hooks';
-import { SelectChangeEvent } from '@mui/material';
+import { useState } from 'react';
 
 export const useCheckInPage = () => {
   const [selectedMemberId, setSelectedMemberId] = useState('');

@@ -1,8 +1,12 @@
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import CardMembershipIcon from '@mui/icons-material/CardMembership';
+import HistoryIcon from '@mui/icons-material/History';
+import HowToRegIcon from '@mui/icons-material/HowToReg';
+import LogoutIcon from '@mui/icons-material/Logout';
+import PaymentIcon from '@mui/icons-material/Payment';
+import PeopleIcon from '@mui/icons-material/People';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import {
   Box,
   Divider,
@@ -13,14 +17,10 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import PeopleIcon from '@mui/icons-material/People';
-import PaymentIcon from '@mui/icons-material/Payment';
-import HistoryIcon from '@mui/icons-material/History';
-import CardMembershipIcon from '@mui/icons-material/CardMembership';
-import HowToRegIcon from '@mui/icons-material/HowToReg';
-import LogoutIcon from '@mui/icons-material/Logout';
 import { useAuth } from '@/app/ui/context/auth-context';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import React from 'react';
 
 const DRAWER_WIDTH = 240;
 

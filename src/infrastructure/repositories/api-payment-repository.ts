@@ -1,7 +1,7 @@
-import { AxiosInstance } from 'axios';
 import { Member, Payment, PaymentWithMember } from '@/core/entities';
 import { PaymentRepository } from '@/core/repositories';
 import { MEMBERS_URL, PAYMENTS_URL } from '@/infrastructure/api-client';
+import { AxiosInstance } from 'axios';
 
 export class ApiPaymentRepository implements PaymentRepository {
   constructor(private apiClient: AxiosInstance) {}

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { apiClient } from '@/infrastructure/api-client';
 import { CheckIn } from '@/core/entities';
+import { apiClient } from '@/infrastructure/api-client';
 import { ApiCheckInRepository } from '@/infrastructure/repositories';
 import { CheckInServiceImpl } from '@/infrastructure/services';
 

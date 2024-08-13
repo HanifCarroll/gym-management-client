@@ -1,6 +1,6 @@
 import { CheckIn } from '@/core/entities';
-import { CheckInService } from '@/core/services';
 import { CheckInRepository } from '@/core/repositories';
+import { CheckInService } from '@/core/services';
 
 export class CheckInServiceImpl implements CheckInService {
   constructor(private checkInRepository: CheckInRepository) {}

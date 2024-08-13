@@ -1,14 +1,14 @@
 'use client';
 
-import React from 'react';
 import { Box, Container, Typography } from '@mui/material';
-import { AgGridReact } from 'ag-grid-react';
+import { LoadingAnimation } from '@/app/ui/components';
+import { usePaymentsWithMembers } from '@/app/ui/hooks';
+import { PaymentWithMember } from '@/core/entities';
 import { ColDef } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-material.css';
-import { usePaymentsWithMembers } from '@/app/ui/hooks';
-import { LoadingAnimation } from '@/app/ui/components';
-import { PaymentWithMember } from '@/core/entities';
+import { AgGridReact } from 'ag-grid-react';
+import React from 'react';
 
 const columnDefs: ColDef<PaymentWithMember>[] = [
   {

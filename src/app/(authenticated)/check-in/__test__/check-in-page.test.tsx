@@ -1,15 +1,15 @@
-import { screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { http, HttpResponse } from 'msw';
-import { setupServer } from 'msw/node';
-import { CheckIn, Member } from '@/core/entities';
-import CheckInPage from '../page';
 import {
   CHECK_INS_MATCHER,
   MEMBERS_MATCHER,
   renderWithProviders,
 } from '../../../../../test-utils';
-import { CHECK_INS_URL } from '@/infrastructure/api-client'; // Mock AG Grid
+import { CHECK_INS_URL } from '@/infrastructure/api-client';
+import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { CheckIn, Member } from '@/core/entities';
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
+import CheckInPage from '../page';
 
 const mockMembers: Member[] = [
   {

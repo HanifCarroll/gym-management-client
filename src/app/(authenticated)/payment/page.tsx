@@ -1,13 +1,5 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
-import {
-  CardElement,
-  Elements,
-  useElements,
-  useStripe,
-} from '@stripe/react-stripe-js';
 import {
   Box,
   Button,
@@ -21,12 +13,20 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import {
+  CardElement,
+  Elements,
+  useElements,
+  useStripe,
+} from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import { useSnackbar } from '@/app/ui/context';
 import {
   useConfirmPayment,
   useGetMembers,
   useInitiatePayment,
 } from '@/app/ui/hooks';
+import React, { useEffect, useState } from 'react';
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,

@@ -1,3 +1,5 @@
+import { LoadingAnimation } from '@/app/ui/components/loading-animation';
+import { usePathname, useRouter } from 'next/navigation';
 import React, {
   createContext,
   useCallback,
@@ -5,8 +7,6 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-import { LoadingAnimation } from '@/app/ui/components/loading-animation';
 
 interface AuthContextType {
   isAuthenticated: boolean;

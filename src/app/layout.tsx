@@ -1,9 +1,10 @@
 'use client';
-import React from 'react';
-import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+
+import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '@/app/ui/context/auth-context';
 import { SnackbarProvider } from '@/app/ui/context/snackbar-context';
+import React from 'react';
 
 const theme = createTheme();
 const queryClient = new QueryClient();

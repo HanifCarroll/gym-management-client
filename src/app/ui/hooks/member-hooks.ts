@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSnackbar } from '@/app/ui/context';
 import { CreateMemberData, Member, UpdateMemberData } from '@/core/entities';
 import { ApiMemberRepository } from '@/infrastructure/repositories';
 import { MemberServiceImpl } from '@/infrastructure/services';
-import { useSnackbar } from '@/app/ui/context';
 
 const memberRepository = new ApiMemberRepository();
 const memberService = new MemberServiceImpl(memberRepository);

@@ -1,8 +1,8 @@
-import React from 'react';
-import { render, RenderOptions } from '@testing-library/react';
-import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { RenderOptions, render } from '@testing-library/react';
 import { AuthProvider, SnackbarProvider } from '@/app/ui/context';
+import React from 'react';
 
 export const MEMBERS_MATCHER = '*/members';
 export const CHECK_INS_MATCHER = '*/check-ins';

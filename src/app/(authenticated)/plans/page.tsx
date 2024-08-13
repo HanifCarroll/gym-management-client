@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import {
   Button,
   Container,
@@ -15,10 +15,10 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useDeleteMembershipPlan, useMembershipPlans } from '@/app/ui/hooks';
 import { LoadingAnimation, MembershipPlanDialog } from '@/app/ui/components';
-import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
+import { useDeleteMembershipPlan, useMembershipPlans } from '@/app/ui/hooks';
 import { MembershipPlan } from '@/core/entities';
+import React, { useState } from 'react';
 
 const MembershipPlanRow: React.FC<{
   plan: MembershipPlan;

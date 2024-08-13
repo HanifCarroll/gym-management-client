@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import { useAuth } from '@/app/ui/context/auth-context';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 export default function Home() {
   const { isAuthenticated } = useAuth();
