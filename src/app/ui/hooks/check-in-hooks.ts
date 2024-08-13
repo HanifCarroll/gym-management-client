@@ -7,13 +7,10 @@ import { CheckInServiceImpl } from '@/infrastructure/services';
 const checkInRepository = new ApiCheckInRepository(apiClient);
 const checkInService = new CheckInServiceImpl(checkInRepository);
 
-export const useCheckIns = (memberId?: string) => {
+export const useGetCheckIns = () => {
   return useQuery<CheckIn[], Error>({
-    queryKey: ['checkIns', memberId],
-    queryFn: () =>
-      memberId
-        ? checkInService.getCheckInsByMemberId(memberId)
-        : checkInService.getCheckIns(),
+    queryKey: ['checkIns'],
+    queryFn: () => checkInService.getCheckIns(),
   });
 };
 
@@ -21,8 +18,8 @@ export const useCreateCheckIn = () => {
   const queryClient = useQueryClient();
   return useMutation<CheckIn, Error, string>({
     mutationFn: (memberId: string) => checkInService.createCheckIn(memberId),
-    onSuccess: async (_, memberId) => {
-      await queryClient.invalidateQueries({ queryKey: ['checkIns', memberId] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['checkIns'] });
     },
   });
 };

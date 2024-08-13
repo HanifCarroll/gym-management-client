@@ -16,7 +16,11 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { format, parseISO } from 'date-fns';
 import { ColDef, ValueFormatterParams } from 'ag-grid-community';
-import { useCheckIns, useCreateCheckIn, useGetMembers } from '@/app/ui/hooks';
+import {
+  useCreateCheckIn,
+  useGetCheckIns,
+  useGetMembers,
+} from '@/app/ui/hooks';
 import { CheckIn, Member } from '@/core/entities';
 import { useSnackbar } from '@/app/ui/context';
 import { LoadingAnimation } from '@/app/ui/components';
@@ -103,14 +107,13 @@ const CheckInGrid: React.FC<{ checkIns: CheckIn[] }> = ({ checkIns }) => {
 export default function CheckInPage() {
   const [selectedMemberId, setSelectedMemberId] = useState('');
   const { data: members = [] } = useGetMembers();
-  const {
-    data: checkIns = [],
-    isLoading,
-    isError,
-  } = useCheckIns(selectedMemberId);
+  const { data: checkIns = [], isLoading, isError } = useGetCheckIns();
   const { mutate: checkInMember, isPending: isCheckInPending } =
     useCreateCheckIn();
   const { showSnackbar } = useSnackbar();
+  const filteredCheckIns = selectedMemberId
+    ? checkIns.filter((checkIn) => checkIn.memberId === selectedMemberId)
+    : checkIns;
 
   const handleMemberChange = (event: SelectChangeEvent) => {
     const memberId = event.target.value;
@@ -162,7 +165,7 @@ export default function CheckInPage() {
           Check In
         </Button>
       </Box>
-      <CheckInGrid checkIns={checkIns} />
+      <CheckInGrid checkIns={filteredCheckIns} />
     </Box>
   );
 }
