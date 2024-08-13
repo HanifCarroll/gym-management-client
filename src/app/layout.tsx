@@ -9,24 +9,24 @@ const theme = createTheme();
 const queryClient = new QueryClient();
 
 export default function RootLayout({
-                                     children,
-                                   }: {
-  children: React.ReactNode
+  children,
+}: {
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
-    <body>
-    <AuthProvider>
-      <SnackbarProvider>
-        <QueryClientProvider client={queryClient}>
-          <ThemeProvider theme={theme}>
-            <CssBaseline/>
-            {children}
-          </ThemeProvider>
-        </QueryClientProvider>
-      </SnackbarProvider>
-    </AuthProvider>
-    </body>
+      <body>
+        <AuthProvider>
+          <SnackbarProvider>
+            <QueryClientProvider client={queryClient}>
+              <ThemeProvider theme={theme}>
+                <CssBaseline />
+                {children}
+              </ThemeProvider>
+            </QueryClientProvider>
+          </SnackbarProvider>
+        </AuthProvider>
+      </body>
     </html>
   );
 }

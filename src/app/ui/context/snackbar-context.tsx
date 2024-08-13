@@ -5,7 +5,9 @@ interface SnackbarContextType {
   showSnackbar: (message: string, severity: AlertColor) => void;
 }
 
-const SnackbarContext = createContext<SnackbarContextType | undefined>(undefined);
+const SnackbarContext = createContext<SnackbarContextType | undefined>(
+  undefined,
+);
 
 export const useSnackbar = () => {
   const context = useContext(SnackbarContext);
@@ -19,10 +21,12 @@ interface SnackbarProviderProps {
   children: ReactNode;
 }
 
-export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({ children }) => {
-  const [ open, setOpen ] = useState(false);
-  const [ message, setMessage ] = useState('');
-  const [ severity, setSeverity ] = useState<AlertColor>('info');
+export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({
+  children,
+}) => {
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState('');
+  const [severity, setSeverity] = useState<AlertColor>('info');
 
   const showSnackbar = (message: string, severity: AlertColor) => {
     setMessage(message);
@@ -30,7 +34,10 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({ children }) 
     setOpen(true);
   };
 
-  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string,
+  ) => {
     if (reason === 'clickaway') {
       return;
     }
@@ -46,7 +53,12 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({ children }) 
         onClose={handleClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={handleClose} severity={severity} variant="filled" sx={{ width: '100%' }}>
+        <Alert
+          onClose={handleClose}
+          severity={severity}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
           {message}
         </Alert>
       </Snackbar>

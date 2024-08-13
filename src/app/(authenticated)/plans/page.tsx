@@ -23,7 +23,7 @@ import { MembershipPlan } from '@/core/entities';
 const MembershipPlanRow: React.FC<{
   plan: MembershipPlan;
   onEdit: (plan: MembershipPlan) => void;
-  onDelete: (id: string) => void
+  onDelete: (id: string) => void;
 }> = ({ plan, onEdit, onDelete }) => (
   <TableRow>
     <TableCell>{plan.name}</TableCell>
@@ -32,18 +32,23 @@ const MembershipPlanRow: React.FC<{
     <TableCell>
       <Tooltip title="Edit">
         <IconButton onClick={() => onEdit(plan)} size="small">
-          <EditIcon/>
+          <EditIcon />
         </IconButton>
       </Tooltip>
       <Tooltip title="Delete">
         <IconButton
           onClick={() => {
-            if (confirm('All memberships linked to this plan will be deleted. Are you sure you want to delete this plan?')) {
+            if (
+              confirm(
+                'All memberships linked to this plan will be deleted. Are you sure you want to delete this plan?',
+              )
+            ) {
               onDelete(plan.id);
             }
           }}
-          size="small">
-          <DeleteIcon/>
+          size="small"
+        >
+          <DeleteIcon />
         </IconButton>
       </Tooltip>
     </TableCell>
@@ -51,8 +56,8 @@ const MembershipPlanRow: React.FC<{
 );
 
 const MembershipPlanPage: React.FC = () => {
-  const [ openDialog, setOpenDialog ] = useState(false);
-  const [ editingPlan, setEditingPlan ] = useState<MembershipPlan | null>(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [editingPlan, setEditingPlan] = useState<MembershipPlan | null>(null);
 
   const { data: plans = [], isLoading, isError } = useMembershipPlans();
   const deleteMutation = useDeleteMembershipPlan();
@@ -68,11 +73,13 @@ const MembershipPlanPage: React.FC = () => {
   };
 
   if (isLoading) {
-    return <LoadingAnimation/>
+    return <LoadingAnimation />;
   }
 
   if (isError) {
-    return <Typography color="error">Error loading membership plans</Typography>;
+    return (
+      <Typography color="error">Error loading membership plans</Typography>
+    );
   }
 
   return (
@@ -80,7 +87,12 @@ const MembershipPlanPage: React.FC = () => {
       <Typography variant="h4" gutterBottom>
         Membership Plans
       </Typography>
-      <Button variant="contained" color="primary" onClick={() => handleOpenDialog()} sx={{ mb: 2 }}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => handleOpenDialog()}
+        sx={{ mb: 2 }}
+      >
         Add New Plan
       </Button>
       <TableContainer component={Paper}>

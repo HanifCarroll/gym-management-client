@@ -3,14 +3,21 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/app/ui/context';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Box, Button, Container, Paper, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Container,
+  Paper,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { LoadingAnimation } from '@/app/ui/components';
 
 const LoginPage: React.FC = () => {
-  const [ username, setUsername ] = useState('');
-  const [ password, setPassword ] = useState('');
-  const [ error, setError ] = useState('');
-  const { isAuthenticated, login, } = useAuth();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const { isAuthenticated, login } = useAuth();
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -31,9 +38,7 @@ const LoginPage: React.FC = () => {
   };
 
   if (isAuthenticated) {
-    return (
-      <LoadingAnimation/>
-    );
+    return <LoadingAnimation />;
   }
 
   return (

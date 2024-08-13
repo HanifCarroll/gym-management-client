@@ -5,6 +5,9 @@ export interface MembershipPlan {
   price: number;
 }
 
-export type CreateMembershipPlanData = Omit<MembershipPlan, 'id' | 'createdAt' | 'updatedAt'>;
+export type CreateMembershipPlanData = Omit<
+  MembershipPlan,
+  'id' | 'createdAt' | 'updatedAt'
+>;
 
 export type UpdateMembershipPlanData = Partial<CreateMembershipPlanData>;

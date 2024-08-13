@@ -4,14 +4,16 @@ import { PaymentRepository } from '@/core/repositories';
 import { MEMBERS_URL, PAYMENTS_URL } from '@/infrastructure/api-client';
 
 export class ApiPaymentRepository implements PaymentRepository {
-  constructor(private apiClient: AxiosInstance) {
-  }
+  constructor(private apiClient: AxiosInstance) {}
 
-  async initiatePayment(amount: number, memberId: string): Promise<{ clientSecret: string; paymentIntentId: string }> {
-    const response = await this.apiClient.post<{ clientSecret: string; paymentIntentId: string }>(
-      `${PAYMENTS_URL}/initiate`,
-      { amount, memberId }
-    );
+  async initiatePayment(
+    amount: number,
+    memberId: string,
+  ): Promise<{ clientSecret: string; paymentIntentId: string }> {
+    const response = await this.apiClient.post<{
+      clientSecret: string;
+      paymentIntentId: string;
+    }>(`${PAYMENTS_URL}/initiate`, { amount, memberId });
     return response.data;
   }
 
@@ -20,21 +22,28 @@ export class ApiPaymentRepository implements PaymentRepository {
   }
 
   async getPaymentHistory(): Promise<Payment[]> {
-    const response = await this.apiClient.get<Payment[]>(`${PAYMENTS_URL}/history`);
+    const response = await this.apiClient.get<Payment[]>(
+      `${PAYMENTS_URL}/history`,
+    );
     return response.data;
   }
 
   async getPaymentsWithMembers(): Promise<PaymentWithMember[]> {
-    const [ paymentsResponse, membersResponse ] = await Promise.all([
+    const [paymentsResponse, membersResponse] = await Promise.all([
       this.apiClient.get<Payment[]>(`${PAYMENTS_URL}/history`),
-      this.apiClient.get<Member[]>(MEMBERS_URL)
+      this.apiClient.get<Member[]>(MEMBERS_URL),
     ]);
 
-    const memberMap = new Map(membersResponse.data.map(member => [ member.id, `${member.firstName} ${member.lastName}` ]));
+    const memberMap = new Map(
+      membersResponse.data.map((member) => [
+        member.id,
+        `${member.firstName} ${member.lastName}`,
+      ]),
+    );
 
-    return paymentsResponse.data.map(payment => ({
+    return paymentsResponse.data.map((payment) => ({
       ...payment,
-      memberName: memberMap.get(payment.memberId) || 'Unknown Member'
+      memberName: memberMap.get(payment.memberId) || 'Unknown Member',
     }));
   }
 }

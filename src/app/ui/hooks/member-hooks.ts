@@ -1,5 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { CreateMemberData, Member, MemberStatus, UpdateMemberData } from '@/core/entities';
+import {
+  CreateMemberData,
+  Member,
+  MemberStatus,
+  UpdateMemberData,
+} from '@/core/entities';
 import { ApiMemberRepository } from '@/infrastructure/repositories';
 import { MemberServiceImpl } from '@/infrastructure/services/member-service-impl';
 import { useSnackbar } from '@/app/ui/context/snackbar-context';
@@ -14,7 +19,7 @@ export const useRegisterMember = (onSuccess?: () => void) => {
   return useMutation<Member, Error, CreateMemberData>({
     mutationFn: (data: CreateMemberData) => memberService.createMember(data),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: [ 'members' ] });
+      await queryClient.invalidateQueries({ queryKey: ['members'] });
       showSnackbar('Member registered successfully!', 'success');
       onSuccess?.();
     },
@@ -27,7 +32,7 @@ export const useRegisterMember = (onSuccess?: () => void) => {
 
 export const useGetMembers = () => {
   return useQuery<Member[], Error>({
-    queryKey: [ 'members' ],
+    queryKey: ['members'],
     queryFn: () => memberService.getMembers(),
   });
 };
@@ -36,10 +41,14 @@ export const useUpdateMember = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
   const { showSnackbar } = useSnackbar();
 
-  return useMutation<Member | null, Error, { id: string; data: UpdateMemberData }>({
+  return useMutation<
+    Member | null,
+    Error,
+    { id: string; data: UpdateMemberData }
+  >({
     mutationFn: ({ id, data }) => memberService.updateMember(id, data),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: [ 'members' ] });
+      await queryClient.invalidateQueries({ queryKey: ['members'] });
       showSnackbar('Member updated successfully!', 'success');
       onSuccess?.();
     },
@@ -56,7 +65,7 @@ export const useDeleteMember = () => {
   return useMutation({
     mutationFn: (id: string) => memberService.deleteMember(id),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: [ 'members', 'list' ] });
+      await queryClient.invalidateQueries({ queryKey: ['members', 'list'] });
       showSnackbar('Member deleted successfully!', 'success');
     },
     onError: (error) => {
@@ -64,11 +73,11 @@ export const useDeleteMember = () => {
       console.error('Error delete member:', error);
     },
   });
-}
+};
 
 export const useGetMembershipStatus = (memberId: string) => {
   return useQuery<MemberStatus, Error>({
-    queryKey: [ 'memberStatus', memberId ],
+    queryKey: ['memberStatus', memberId],
     queryFn: () => memberService.getMembershipStatus(memberId),
   });
 };
@@ -77,20 +86,33 @@ export const useUpdateMembershipStatus = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
   const { showSnackbar } = useSnackbar();
 
-  return useMutation<boolean, Error, { memberId: string; status: MemberStatus }>({
-    mutationFn: ({ memberId, status }) => memberService.updateMembershipStatus(memberId, status),
+  return useMutation<
+    boolean,
+    Error,
+    { memberId: string; status: MemberStatus }
+  >({
+    mutationFn: ({ memberId, status }) =>
+      memberService.updateMembershipStatus(memberId, status),
     onSuccess: async (success, { memberId }) => {
       if (success) {
-        await queryClient.invalidateQueries({ queryKey: [ 'members' ] });
-        await queryClient.invalidateQueries({ queryKey: [ 'memberStatus', memberId ] });
+        await queryClient.invalidateQueries({ queryKey: ['members'] });
+        await queryClient.invalidateQueries({
+          queryKey: ['memberStatus', memberId],
+        });
         showSnackbar('Member status updated successfully!', 'success');
         onSuccess?.();
       } else {
-        showSnackbar('Failed to update member status. Please try again.', 'error');
+        showSnackbar(
+          'Failed to update member status. Please try again.',
+          'error',
+        );
       }
     },
     onError: (error) => {
-      showSnackbar('Failed to update member status. Please try again.', 'error');
+      showSnackbar(
+        'Failed to update member status. Please try again.',
+        'error',
+      );
       console.error('Error updating member status:', error);
     },
   });

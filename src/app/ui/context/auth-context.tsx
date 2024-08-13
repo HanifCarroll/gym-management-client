@@ -1,4 +1,10 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { LoadingAnimation } from '@/app/ui/components/loading-animation';
 
@@ -10,9 +16,11 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [ isLoading, setIsLoading ] = useState(true);
-  const [ isAuthenticated, setIsAuthenticated ] = useState(false);
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -20,13 +28,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('authToken', 'dummyToken');
     setIsAuthenticated(true);
     router.push('/members');
-  }, [ router ]);
+  }, [router]);
 
   const logout = useCallback(() => {
     localStorage.removeItem('authToken');
     setIsAuthenticated(false);
     router.push('/login');
-  }, [ router ]);
+  }, [router]);
 
   useEffect(() => {
     const checkAuth = () => {
@@ -42,11 +50,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     checkAuth();
-  }, [ pathname, router ]);
+  }, [pathname, router]);
 
   // isLoading is used to prevent the user from seeing a flash of authenticated content on page load.
   if (isLoading) {
-    return <LoadingAnimation/>
+    return <LoadingAnimation />;
   }
 
   return (

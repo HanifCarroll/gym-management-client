@@ -1,4 +1,9 @@
-import { CreateMemberData, Member, MemberStatus, UpdateMemberData } from '@/core/entities';
+import {
+  CreateMemberData,
+  Member,
+  MemberStatus,
+  UpdateMemberData,
+} from '@/core/entities';
 import { MemberRepository } from '@/core/repositories';
 import { MemberService } from '@/core/services';
 import { ApiMemberRepository } from '@/infrastructure/repositories';
@@ -22,7 +27,10 @@ export class MemberServiceImpl implements MemberService {
     return this.memberRepository.create(memberData);
   }
 
-  async updateMember(id: string, memberData: UpdateMemberData): Promise<Member | null> {
+  async updateMember(
+    id: string,
+    memberData: UpdateMemberData,
+  ): Promise<Member | null> {
     return this.memberRepository.update(id, memberData);
   }
 
@@ -44,7 +52,10 @@ export class MemberServiceImpl implements MemberService {
     return member.status;
   }
 
-  async updateMembershipStatus(memberId: string, status: MemberStatus): Promise<boolean> {
+  async updateMembershipStatus(
+    memberId: string,
+    status: MemberStatus,
+  ): Promise<boolean> {
     try {
       await this.memberRepository.update(memberId, { status });
       return true;

@@ -1,17 +1,25 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Typography,
+} from '@mui/material';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { format, parseISO } from 'date-fns';
-import { ColDef } from 'ag-grid-community';
+import { ColDef, ValueFormatterParams } from 'ag-grid-community';
 import { useCheckIns, useCreateCheckIn, useGetMembers } from '@/app/ui/hooks';
 import { CheckIn, Member } from '@/core/entities';
 import { useSnackbar } from '@/app/ui/context';
 import { LoadingAnimation } from '@/app/ui/components';
-
 
 const columnDefs: ColDef<CheckIn>[] = [
   {
@@ -19,37 +27,39 @@ const columnDefs: ColDef<CheckIn>[] = [
     headerName: 'Date',
     sortable: true,
     filter: true,
-    valueFormatter: (params: any) => format(parseISO(params.value), 'yyyy-MM-dd'),
-    cellStyle: { display: 'flex', alignItems: 'center' }
+    valueFormatter: (params: ValueFormatterParams) =>
+      format(parseISO(params.value), 'yyyy-MM-dd'),
+    cellStyle: { display: 'flex', alignItems: 'center' },
   },
   {
     field: 'dateTime',
     headerName: 'Time',
     sortable: true,
     filter: true,
-    valueFormatter: (params: any) => format(parseISO(params.value), 'HH:mm:ss'),
-    cellStyle: { display: 'flex', alignItems: 'center' }
+    valueFormatter: (params: ValueFormatterParams) =>
+      format(parseISO(params.value), 'HH:mm:ss'),
+    cellStyle: { display: 'flex', alignItems: 'center' },
   },
   {
     field: 'member.firstName',
     headerName: 'First Name',
     sortable: true,
     filter: true,
-    cellStyle: { display: 'flex', alignItems: 'center' }
+    cellStyle: { display: 'flex', alignItems: 'center' },
   },
   {
     field: 'member.lastName',
     headerName: 'Last Name',
     sortable: true,
     filter: true,
-    cellStyle: { display: 'flex', alignItems: 'center' }
+    cellStyle: { display: 'flex', alignItems: 'center' },
   },
   {
     field: 'member.email',
     headerName: 'Email',
     sortable: true,
     filter: true,
-    cellStyle: { display: 'flex', alignItems: 'center' }
+    cellStyle: { display: 'flex', alignItems: 'center' },
   },
 ];
 
@@ -77,7 +87,6 @@ const MemberSelect: React.FC<{
 );
 
 const CheckInGrid: React.FC<{ checkIns: CheckIn[] }> = ({ checkIns }) => {
-
   return (
     <div className="ag-theme-alpine" style={{ height: 400, width: '100%' }}>
       <AgGridReact
@@ -92,16 +101,21 @@ const CheckInGrid: React.FC<{ checkIns: CheckIn[] }> = ({ checkIns }) => {
   );
 };
 export default function CheckInPage() {
-  const [ selectedMemberId, setSelectedMemberId ] = useState('');
+  const [selectedMemberId, setSelectedMemberId] = useState('');
   const { data: members = [] } = useGetMembers();
-  const { data: checkIns = [], isLoading, isError } = useCheckIns(selectedMemberId);
-  const { mutate: checkInMember, isPending: isCheckInPending } = useCreateCheckIn();
+  const {
+    data: checkIns = [],
+    isLoading,
+    isError,
+  } = useCheckIns(selectedMemberId);
+  const { mutate: checkInMember, isPending: isCheckInPending } =
+    useCreateCheckIn();
   const { showSnackbar } = useSnackbar();
 
   const handleMemberChange = (event: SelectChangeEvent) => {
     const memberId = event.target.value;
     setSelectedMemberId(memberId);
-    const selectedMember = members.find(member => member.id === memberId);
+    const selectedMember = members.find((member) => member.id === memberId);
     if (selectedMember && selectedMember.status !== 'Active') {
       showSnackbar('Warning: The selected member is not active.', 'warning');
     }
@@ -121,7 +135,7 @@ export default function CheckInPage() {
   };
 
   if (isLoading) {
-    return <LoadingAnimation/>
+    return <LoadingAnimation />;
   }
 
   if (isError) {
@@ -130,19 +144,25 @@ export default function CheckInPage() {
 
   return (
     <Box sx={{ maxWidth: 1200, margin: 'auto', p: 2 }}>
-      <Typography variant="h4" gutterBottom>Gym Check-In System</Typography>
+      <Typography variant="h4" gutterBottom>
+        Gym Check-In System
+      </Typography>
       <Box sx={{ mb: 2 }}>
         <MemberSelect
           selectedMemberId={selectedMemberId}
           onMemberChange={handleMemberChange}
           members={members}
         />
-        <Button variant="contained" onClick={handleCheckIn} disabled={!selectedMemberId || isCheckInPending}
-                sx={{ mt: 2 }}>
+        <Button
+          variant="contained"
+          onClick={handleCheckIn}
+          disabled={!selectedMemberId || isCheckInPending}
+          sx={{ mt: 2 }}
+        >
           Check In
         </Button>
       </Box>
-      <CheckInGrid checkIns={checkIns}/>
+      <CheckInGrid checkIns={checkIns} />
     </Box>
   );
 }

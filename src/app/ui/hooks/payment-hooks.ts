@@ -8,10 +8,17 @@ import { useSnackbar } from '@/app/ui/context';
 const paymentRepository = new ApiPaymentRepository(apiClient);
 const paymentService = new PaymentServiceImpl(paymentRepository);
 
-export const useInitiatePayment = (onSuccess?: (data: { clientSecret: string; paymentIntentId: string }) => void) => {
+export const useInitiatePayment = (
+  onSuccess?: (data: { clientSecret: string; paymentIntentId: string }) => void,
+) => {
   const { showSnackbar } = useSnackbar();
-  return useMutation<{ clientSecret: string; paymentIntentId: string }, Error, { amount: number; memberId: string }>({
-    mutationFn: ({ amount, memberId }) => paymentService.initiatePayment(amount, memberId),
+  return useMutation<
+    { clientSecret: string; paymentIntentId: string },
+    Error,
+    { amount: number; memberId: string }
+  >({
+    mutationFn: ({ amount, memberId }) =>
+      paymentService.initiatePayment(amount, memberId),
     onSuccess: (data) => {
       onSuccess?.(data);
     },
@@ -26,14 +33,18 @@ export const useConfirmPayment = (onSuccess?: () => void) => {
   const { showSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
   return useMutation<void, Error, string>({
-    mutationFn: (paymentIntentId: string) => paymentService.confirmPayment(paymentIntentId),
+    mutationFn: (paymentIntentId: string) =>
+      paymentService.confirmPayment(paymentIntentId),
     onSuccess: async () => {
       showSnackbar('Payment successful!', 'success');
-      await queryClient.invalidateQueries({ queryKey: [ 'paymentHistory' ] });
+      await queryClient.invalidateQueries({ queryKey: ['paymentHistory'] });
       onSuccess?.();
     },
     onError: (error) => {
-      showSnackbar('Payment confirmed on Stripe but failed to update our records. Please contact support.', 'error');
+      showSnackbar(
+        'Payment confirmed on Stripe but failed to update our records. Please contact support.',
+        'error',
+      );
       console.error('Error confirming payment:', error);
     },
   });
@@ -41,14 +52,14 @@ export const useConfirmPayment = (onSuccess?: () => void) => {
 
 export const usePaymentHistory = () => {
   return useQuery<Payment[], Error>({
-    queryKey: [ 'paymentHistory' ],
+    queryKey: ['paymentHistory'],
     queryFn: () => paymentService.getPaymentHistory(),
   });
 };
 
 export const usePaymentsWithMembers = () => {
   return useQuery<PaymentWithMember[], Error>({
-    queryKey: [ 'paymentsWithMembers' ],
+    queryKey: ['paymentsWithMembers'],
     queryFn: () => paymentService.getPaymentsWithMembers(),
   });
 };

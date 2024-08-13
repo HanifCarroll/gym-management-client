@@ -16,7 +16,8 @@
   margin-bottom: 10px;
 }
 
-.menu a, .menu span {
+.menu a,
+.menu span {
   text-decoration: none;
   color: #333;
   font-weight: bold;

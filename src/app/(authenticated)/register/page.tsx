@@ -26,11 +26,15 @@ const initialFormData: CreateMemberData = {
 };
 
 const RegisterMember: React.FC = () => {
-  const [ formData, setFormData ] = useState<CreateMemberData>(initialFormData);
-  const registerMemberMutation = useRegisterMember(() => setFormData(initialFormData));
+  const [formData, setFormData] = useState<CreateMemberData>(initialFormData);
+  const registerMemberMutation = useRegisterMember(() =>
+    setFormData(initialFormData),
+  );
 
   const handleChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<MemberStatus>
+    event:
+      | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | SelectChangeEvent<MemberStatus>,
   ) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({
@@ -96,9 +100,9 @@ const RegisterMember: React.FC = () => {
               onChange={handleChange}
               label="Status"
             >
-              <MenuItem value='Active'>Active</MenuItem>
-              <MenuItem value='Inative'>Inactive</MenuItem>
-              <MenuItem value='Suspended'>Suspended</MenuItem>
+              <MenuItem value="Active">Active</MenuItem>
+              <MenuItem value="Inative">Inactive</MenuItem>
+              <MenuItem value="Suspended">Suspended</MenuItem>
             </Select>
           </FormControl>
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
@@ -109,7 +113,9 @@ const RegisterMember: React.FC = () => {
               size="large"
               disabled={registerMemberMutation.isPending}
             >
-              {registerMemberMutation.isPending ? 'Registering...' : 'Register Member'}
+              {registerMemberMutation.isPending
+                ? 'Registering...'
+                : 'Register Member'}
             </Button>
           </Box>
         </form>

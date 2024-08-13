@@ -30,10 +30,14 @@ import {
 } from '@mui/material';
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { Member, MemberStatus } from '@/core/entities';
-import { useDeleteMember, useGetMembers, useUpdateMember } from '@/app/ui/hooks';
+import {
+  useDeleteMember,
+  useGetMembers,
+  useUpdateMember,
+} from '@/app/ui/hooks';
 
 const ViewAllMembers: React.FC = () => {
-  const [ editingMember, setEditingMember ] = useState<Member | null>(null);
+  const [editingMember, setEditingMember] = useState<Member | null>(null);
   const { data: members = [], isLoading, isError, error } = useGetMembers();
   const updateMemberMutation = useUpdateMember();
   const deleteMemberMutation = useDeleteMember();
@@ -46,24 +50,44 @@ const ViewAllMembers: React.FC = () => {
     }
   };
 
-  const handleEditChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<MemberStatus>) => {
+  const handleEditChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | SelectChangeEvent<MemberStatus>,
+  ) => {
     const { name, value } = e.target;
-    setEditingMember(prev => prev ? { ...prev, [name]: value } : null);
+    setEditingMember((prev) => (prev ? { ...prev, [name]: value } : null));
   };
 
   const handleEditSubmit = () => {
     if (editingMember) {
-      const { createdAt, updatedAt, ...updatedMember } = editingMember;
-      updateMemberMutation.mutate({ id: editingMember.id, data: updatedMember }, {
-        onSuccess: () => setEditingMember(null)
-      });
+      const updatedMember = {
+        id: editingMember.id,
+        firstName: editingMember.firstName,
+        lastName: editingMember.lastName,
+        email: editingMember.email,
+        phone: editingMember.phone,
+        status: editingMember.status,
+      };
+
+      updateMemberMutation.mutate(
+        { id: editingMember.id, data: updatedMember },
+        {
+          onSuccess: () => setEditingMember(null),
+        },
+      );
     }
   };
 
   if (isLoading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-        <CircularProgress/>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+      >
+        <CircularProgress />
       </Box>
     );
   }
@@ -105,13 +129,19 @@ const ViewAllMembers: React.FC = () => {
                 <TableCell>{member.status}</TableCell>
                 <TableCell align="center">
                   <Tooltip title="Edit">
-                    <IconButton onClick={() => handleEditClick(member)} size="small">
-                      <EditIcon/>
+                    <IconButton
+                      onClick={() => handleEditClick(member)}
+                      size="small"
+                    >
+                      <EditIcon />
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Delete">
-                    <IconButton onClick={() => handleDeleteClick(member.id)} size="small">
-                      <DeleteIcon/>
+                    <IconButton
+                      onClick={() => handleDeleteClick(member.id)}
+                      size="small"
+                    >
+                      <DeleteIcon />
                     </IconButton>
                   </Tooltip>
                 </TableCell>
@@ -121,7 +151,12 @@ const ViewAllMembers: React.FC = () => {
         </Table>
       </TableContainer>
 
-      <Dialog open={!!editingMember} onClose={() => setEditingMember(null)} maxWidth="sm" fullWidth>
+      <Dialog
+        open={!!editingMember}
+        onClose={() => setEditingMember(null)}
+        maxWidth="sm"
+        fullWidth
+      >
         <DialogTitle>Edit Member</DialogTitle>
         <DialogContent>
           <Box sx={{ display: 'grid', gap: 2, pt: 2 }}>
@@ -164,16 +199,20 @@ const ViewAllMembers: React.FC = () => {
                 onChange={handleEditChange}
                 label="Status"
               >
-                <MenuItem value='Active'>Active</MenuItem>
-                <MenuItem value='Inactive'>Inactive</MenuItem>
-                <MenuItem value='Suspended'>Suspended</MenuItem>
+                <MenuItem value="Active">Active</MenuItem>
+                <MenuItem value="Inactive">Inactive</MenuItem>
+                <MenuItem value="Suspended">Suspended</MenuItem>
               </Select>
             </FormControl>
           </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setEditingMember(null)}>Cancel</Button>
-          <Button onClick={handleEditSubmit} variant="contained" color="primary">
+          <Button
+            onClick={handleEditSubmit}
+            variant="contained"
+            color="primary"
+          >
             Save
           </Button>
         </DialogActions>

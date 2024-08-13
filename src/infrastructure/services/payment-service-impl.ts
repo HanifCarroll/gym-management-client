@@ -3,10 +3,12 @@ import { PaymentRepository } from '@/core/repositories';
 import { Payment, PaymentWithMember } from '@/core/entities';
 
 export class PaymentServiceImpl implements PaymentService {
-  constructor(private paymentRepository: PaymentRepository) {
-  }
+  constructor(private paymentRepository: PaymentRepository) {}
 
-  async initiatePayment(amount: number, memberId: string): Promise<{ clientSecret: string; paymentIntentId: string }> {
+  async initiatePayment(
+    amount: number,
+    memberId: string,
+  ): Promise<{ clientSecret: string; paymentIntentId: string }> {
     return this.paymentRepository.initiatePayment(amount, memberId);
   }
 

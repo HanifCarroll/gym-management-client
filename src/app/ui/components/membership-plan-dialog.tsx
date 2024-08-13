@@ -1,6 +1,16 @@
 import React from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, } from '@mui/material';
-import { useCreateMembershipPlan, useUpdateMembershipPlan } from '@/app/ui/hooks/membership-plan-hooks';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+} from '@mui/material';
+import {
+  useCreateMembershipPlan,
+  useUpdateMembershipPlan,
+} from '@/app/ui/hooks/membership-plan-hooks';
 import { MembershipPlan } from '@/core/entities';
 
 interface MembershipPlanDialogProps {
@@ -9,7 +19,11 @@ interface MembershipPlanDialogProps {
   plan: MembershipPlan | null;
 }
 
-export const MembershipPlanDialog: React.FC<MembershipPlanDialogProps> = ({ open, onClose, plan }) => {
+export const MembershipPlanDialog: React.FC<MembershipPlanDialogProps> = ({
+  open,
+  onClose,
+  plan,
+}) => {
   const createMutation = useCreateMembershipPlan();
   const updateMutation = useUpdateMembershipPlan();
 
@@ -23,19 +37,24 @@ export const MembershipPlanDialog: React.FC<MembershipPlanDialogProps> = ({ open
     };
 
     if (plan) {
-      updateMutation.mutate({ plan: planData, id: plan.id }, {
-        onSuccess: onClose
-      });
+      updateMutation.mutate(
+        { plan: planData, id: plan.id },
+        {
+          onSuccess: onClose,
+        },
+      );
     } else {
       createMutation.mutate(planData, {
-        onSuccess: onClose
+        onSuccess: onClose,
       });
     }
   };
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>{plan ? 'Edit Membership Plan' : 'Create Membership Plan'}</DialogTitle>
+      <DialogTitle>
+        {plan ? 'Edit Membership Plan' : 'Create Membership Plan'}
+      </DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
           <TextField

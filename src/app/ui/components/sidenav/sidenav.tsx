@@ -3,7 +3,16 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Box, Divider, Drawer, List, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
+import {
+  Box,
+  Divider,
+  Drawer,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from '@mui/material';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import PeopleIcon from '@mui/icons-material/People';
 import PaymentIcon from '@mui/icons-material/Payment';
@@ -16,18 +25,17 @@ import { useAuth } from '@/app/ui/context/auth-context';
 const DRAWER_WIDTH = 240;
 
 const MENU_ITEMS = [
-  { text: 'Register Member', icon: <PersonAddIcon/>, path: '/register' },
-  { text: 'Member List', icon: <PeopleIcon/>, path: '/members' },
-  { text: 'Process Payment', icon: <PaymentIcon/>, path: '/payment' },
-  { text: 'Payment History', icon: <HistoryIcon/>, path: '/payment-history' },
-  { text: 'Membership Plans', icon: <CardMembershipIcon/>, path: '/plans' },
-  { text: 'Member Check-in', icon: <HowToRegIcon/>, path: '/check-in' },
+  { text: 'Register Member', icon: <PersonAddIcon />, path: '/register' },
+  { text: 'Member List', icon: <PeopleIcon />, path: '/members' },
+  { text: 'Process Payment', icon: <PaymentIcon />, path: '/payment' },
+  { text: 'Payment History', icon: <HistoryIcon />, path: '/payment-history' },
+  { text: 'Membership Plans', icon: <CardMembershipIcon />, path: '/plans' },
+  { text: 'Member Check-in', icon: <HowToRegIcon />, path: '/check-in' },
 ];
 
 const Sidenav = () => {
   const pathname = usePathname();
   const { logout } = useAuth();
-
 
   return (
     <Drawer
@@ -49,7 +57,7 @@ const Sidenav = () => {
             Gym Management
           </Typography>
         </Box>
-        <Divider/>
+        <Divider />
         <List>
           {MENU_ITEMS.map((item) => (
             <ListItemButton
@@ -59,16 +67,18 @@ const Sidenav = () => {
               selected={pathname === item.path}
             >
               <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text}/>
+              <ListItemText primary={item.text} />
             </ListItemButton>
           ))}
         </List>
       </Box>
       <Box sx={{ mt: 'auto' }}>
-        <Divider/>
+        <Divider />
         <ListItemButton onClick={logout}>
-          <ListItemIcon><LogoutIcon/></ListItemIcon>
-          <ListItemText primary="Logout"/>
+          <ListItemIcon>
+            <LogoutIcon />
+          </ListItemIcon>
+          <ListItemText primary="Logout" />
         </ListItemButton>
       </Box>
     </Drawer>

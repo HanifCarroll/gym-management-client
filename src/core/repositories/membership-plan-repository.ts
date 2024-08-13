@@ -1,4 +1,8 @@
-import { CreateMembershipPlanData, MembershipPlan, UpdateMembershipPlanData } from '../entities';
+import {
+  CreateMembershipPlanData,
+  MembershipPlan,
+  UpdateMembershipPlanData,
+} from '../entities';
 
 export interface MembershipPlanRepository {
   getAll(): Promise<MembershipPlan[]>;

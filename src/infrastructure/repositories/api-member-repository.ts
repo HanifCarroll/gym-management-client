@@ -26,7 +26,10 @@ export class ApiMemberRepository implements MemberRepository {
   }
 
   async update(id: string, member: UpdateMemberData): Promise<Member> {
-    const response = await this.apiClient.patch<Member>(`${MEMBERS_URL}/${id}`, member);
+    const response = await this.apiClient.patch<Member>(
+      `${MEMBERS_URL}/${id}`,
+      member,
+    );
     return response.data;
   }
 

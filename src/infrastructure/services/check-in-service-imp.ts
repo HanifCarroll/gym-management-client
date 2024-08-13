@@ -3,8 +3,7 @@ import { CheckInService } from '@/core/services';
 import { CheckInRepository } from '@/core/repositories';
 
 export class CheckInServiceImpl implements CheckInService {
-  constructor(private checkInRepository: CheckInRepository) {
-  }
+  constructor(private checkInRepository: CheckInRepository) {}
 
   async createCheckIn(memberId: string): Promise<CheckIn> {
     return this.checkInRepository.createCheckIn(memberId);

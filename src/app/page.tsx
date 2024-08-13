@@ -14,7 +14,7 @@ export default function Home() {
     } else {
       router.replace('/login');
     }
-  }, [ isAuthenticated, router ]);
+  }, [isAuthenticated, router]);
 
   return null;
 }
