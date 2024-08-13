@@ -37,45 +37,53 @@ const PaymentForm = () => {
   const elements = useElements();
   const [amount, setAmount] = useState('10');
   const [memberId, setMemberId] = useState('');
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const { showSnackbar } = useSnackbar();
-
   const { data: members = [], isLoading: isMembersLoading } = useGetMembers();
-
+  const confirmPaymentMutation = useConfirmPayment();
   const initiatePaymentMutation = useInitiatePayment(async (data) => {
     if (!stripe || !elements) {
       throw new Error('Stripe has not loaded');
     }
+
     const result = await stripe.confirmCardPayment(data.clientSecret, {
       payment_method: {
         card: elements.getElement(CardElement)!,
       },
     });
+
     if (result.error) {
       showSnackbar(result.error.message || 'Payment failed', 'error');
+      setIsProcessingPayment(false);
     } else if (result.paymentIntent.status === 'succeeded') {
-      confirmPaymentMutation.mutate(data.paymentIntentId);
+      confirmPaymentMutation.mutate(data.paymentIntentId, {
+        onSuccess: () => {
+          setAmount('');
+          setMemberId('');
+          elements?.getElement(CardElement)?.clear();
+        },
+        onSettled: () => setIsProcessingPayment(false),
+      });
     }
-  });
-
-  const confirmPaymentMutation = useConfirmPayment(() => {
-    setAmount('');
-    setMemberId('');
-    elements?.getElement(CardElement)?.clear();
   });
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+
     if (!stripe || !elements) {
       showSnackbar('Stripe has not loaded', 'error');
       return;
     }
+
     if (!memberId) {
       showSnackbar('Please select a Member', 'error');
       return;
     }
+
+    setIsProcessingPayment(true);
     initiatePaymentMutation.mutate({
       amount: Math.round(parseFloat(amount) * 100), // Convert to cents
-      memberId: memberId,
+      memberId,
     });
   };
 
@@ -92,7 +100,7 @@ const PaymentForm = () => {
             onChange={(e) => setMemberId(e.target.value)}
             disabled={isMembersLoading}
           >
-            {members?.map((member) => (
+            {members.map((member) => (
               <MenuItem key={member.id} value={member.id}>
                 {`${member.firstName} ${member.lastName}`}
               </MenuItem>
@@ -122,19 +130,9 @@ const PaymentForm = () => {
           variant="contained"
           color="primary"
           fullWidth
-          disabled={
-            !stripe ||
-            initiatePaymentMutation.isPending ||
-            confirmPaymentMutation.isPending ||
-            isMembersLoading
-          }
+          disabled={!stripe || isProcessingPayment || isMembersLoading}
         >
-          {initiatePaymentMutation.isPending ||
-          confirmPaymentMutation.isPending ? (
-            <CircularProgress size={24} />
-          ) : (
-            'Pay'
-          )}
+          {isProcessingPayment ? <CircularProgress size={24} /> : 'Pay'}
         </Button>
       </form>
     </Paper>

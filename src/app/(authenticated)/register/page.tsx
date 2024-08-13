@@ -27,9 +27,7 @@ const initialFormData: CreateMemberData = {
 
 const RegisterMember: React.FC = () => {
   const [formData, setFormData] = useState<CreateMemberData>(initialFormData);
-  const registerMemberMutation = useRegisterMember(() =>
-    setFormData(initialFormData),
-  );
+  const registerMemberMutation = useRegisterMember();
 
   const handleChange = (
     event:
@@ -45,7 +43,9 @@ const RegisterMember: React.FC = () => {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    registerMemberMutation.mutate(formData);
+    registerMemberMutation.mutate(formData, {
+      onSuccess: () => setFormData(initialFormData),
+    });
   };
 
   return (

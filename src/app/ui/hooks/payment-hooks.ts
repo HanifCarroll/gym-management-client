@@ -29,7 +29,7 @@ export const useInitiatePayment = (
   });
 };
 
-export const useConfirmPayment = (onSuccess?: () => void) => {
+export const useConfirmPayment = () => {
   const { showSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
   return useMutation<void, Error, string>({
@@ -38,7 +38,6 @@ export const useConfirmPayment = (onSuccess?: () => void) => {
     onSuccess: async () => {
       showSnackbar('Payment successful!', 'success');
       await queryClient.invalidateQueries({ queryKey: ['paymentHistory'] });
-      onSuccess?.();
     },
     onError: (error) => {
       showSnackbar(

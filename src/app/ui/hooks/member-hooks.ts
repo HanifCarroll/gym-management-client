@@ -1,18 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  CreateMemberData,
-  Member,
-  MemberStatus,
-  UpdateMemberData,
-} from '@/core/entities';
+import { CreateMemberData, Member, UpdateMemberData } from '@/core/entities';
 import { ApiMemberRepository } from '@/infrastructure/repositories';
-import { MemberServiceImpl } from '@/infrastructure/services/member-service-impl';
-import { useSnackbar } from '@/app/ui/context/snackbar-context';
+import { MemberServiceImpl } from '@/infrastructure/services';
+import { useSnackbar } from '@/app/ui/context';
 
 const memberRepository = new ApiMemberRepository();
 const memberService = new MemberServiceImpl(memberRepository);
 
-export const useRegisterMember = (onSuccess?: () => void) => {
+export const useRegisterMember = () => {
   const { showSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
@@ -21,7 +16,6 @@ export const useRegisterMember = (onSuccess?: () => void) => {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['members'] });
       showSnackbar('Member registered successfully!', 'success');
-      onSuccess?.();
     },
     onError: (error) => {
       showSnackbar('Failed to register member. Please try again.', 'error');
@@ -37,7 +31,7 @@ export const useGetMembers = () => {
   });
 };
 
-export const useUpdateMember = (onSuccess?: () => void) => {
+export const useUpdateMember = () => {
   const queryClient = useQueryClient();
   const { showSnackbar } = useSnackbar();
 
@@ -50,7 +44,6 @@ export const useUpdateMember = (onSuccess?: () => void) => {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['members'] });
       showSnackbar('Member updated successfully!', 'success');
-      onSuccess?.();
     },
     onError: (error) => {
       showSnackbar('Failed to update member. Please try again.', 'error');
@@ -71,49 +64,6 @@ export const useDeleteMember = () => {
     onError: (error) => {
       showSnackbar('Failed to delete member. Please try again.', 'error');
       console.error('Error delete member:', error);
-    },
-  });
-};
-
-export const useGetMembershipStatus = (memberId: string) => {
-  return useQuery<MemberStatus, Error>({
-    queryKey: ['memberStatus', memberId],
-    queryFn: () => memberService.getMembershipStatus(memberId),
-  });
-};
-
-export const useUpdateMembershipStatus = (onSuccess?: () => void) => {
-  const queryClient = useQueryClient();
-  const { showSnackbar } = useSnackbar();
-
-  return useMutation<
-    boolean,
-    Error,
-    { memberId: string; status: MemberStatus }
-  >({
-    mutationFn: ({ memberId, status }) =>
-      memberService.updateMembershipStatus(memberId, status),
-    onSuccess: async (success, { memberId }) => {
-      if (success) {
-        await queryClient.invalidateQueries({ queryKey: ['members'] });
-        await queryClient.invalidateQueries({
-          queryKey: ['memberStatus', memberId],
-        });
-        showSnackbar('Member status updated successfully!', 'success');
-        onSuccess?.();
-      } else {
-        showSnackbar(
-          'Failed to update member status. Please try again.',
-          'error',
-        );
-      }
-    },
-    onError: (error) => {
-      showSnackbar(
-        'Failed to update member status. Please try again.',
-        'error',
-      );
-      console.error('Error updating member status:', error);
     },
   });
 };
