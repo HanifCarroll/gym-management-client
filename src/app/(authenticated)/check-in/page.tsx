@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Box,
   Button,
@@ -16,14 +16,9 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { format, parseISO } from 'date-fns';
 import { ColDef, ValueFormatterParams } from 'ag-grid-community';
-import {
-  useCreateCheckIn,
-  useGetCheckIns,
-  useGetMembers,
-} from '@/app/ui/hooks';
 import { CheckIn, Member } from '@/core/entities';
-import { useSnackbar } from '@/app/ui/context';
 import { LoadingAnimation } from '@/app/ui/components';
+import { useCheckInPage } from '@/app/(authenticated)/check-in/use-check-in-page';
 
 const columnDefs: ColDef<CheckIn>[] = [
   {
@@ -92,7 +87,11 @@ const MemberSelect: React.FC<{
 
 const CheckInGrid: React.FC<{ checkIns: CheckIn[] }> = ({ checkIns }) => {
   return (
-    <div className="ag-theme-alpine" style={{ height: 400, width: '100%' }}>
+    <div
+      className="ag-theme-alpine"
+      data-testid="ag-grid"
+      style={{ height: 400, width: '100%' }}
+    >
       <AgGridReact
         rowData={checkIns}
         rowHeight={50}
@@ -105,39 +104,18 @@ const CheckInGrid: React.FC<{ checkIns: CheckIn[] }> = ({ checkIns }) => {
   );
 };
 export default function CheckInPage() {
-  const [selectedMemberId, setSelectedMemberId] = useState('');
-  const { data: members = [] } = useGetMembers();
-  const { data: checkIns = [], isLoading, isError } = useGetCheckIns();
-  const { mutate: checkInMember, isPending: isCheckInPending } =
-    useCreateCheckIn();
-  const { showSnackbar } = useSnackbar();
-  const filteredCheckIns = selectedMemberId
-    ? checkIns.filter((checkIn) => checkIn.memberId === selectedMemberId)
-    : checkIns;
+  const {
+    checkInMember,
+    filteredCheckIns,
+    handleMemberChange,
+    isCheckInPending,
+    isDataLoading,
+    isError,
+    members,
+    selectedMemberId,
+  } = useCheckInPage();
 
-  const handleMemberChange = (event: SelectChangeEvent) => {
-    const memberId = event.target.value;
-    setSelectedMemberId(memberId);
-    const selectedMember = members.find((member) => member.id === memberId);
-    if (selectedMember && selectedMember.status !== 'Active') {
-      showSnackbar('Warning: The selected member is not active.', 'warning');
-    }
-  };
-
-  const handleCheckIn = () => {
-    if (selectedMemberId) {
-      checkInMember(selectedMemberId, {
-        onSuccess: () => {
-          showSnackbar('Check-in successful!', 'success');
-        },
-        onError: (error) => {
-          showSnackbar(`Check-in failed: ${error.message}`, 'error');
-        },
-      });
-    }
-  };
-
-  if (isLoading) {
+  if (isDataLoading) {
     return <LoadingAnimation />;
   }
 
@@ -158,8 +136,8 @@ export default function CheckInPage() {
         />
         <Button
           variant="contained"
-          onClick={handleCheckIn}
-          disabled={!selectedMemberId || isCheckInPending}
+          onClick={checkInMember}
+          disabled={isCheckInPending || !selectedMemberId}
           sx={{ mt: 2 }}
         >
           Check In

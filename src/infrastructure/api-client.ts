@@ -14,4 +14,4 @@ export const apiClient = axios.create({
 export const MEMBERS_URL = '/members';
 export const MEMBERSHIP_PLANS_URL = '/membership-plans';
 export const PAYMENTS_URL = '/payments';
-export const CHECK_IN_URL = '/check-in';
+export const CHECK_INS_URL = '/check-ins';

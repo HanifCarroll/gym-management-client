@@ -3,6 +3,7 @@ import React from 'react';
 
 export const LoadingAnimation = () => (
   <Box
+    data-testid="loading-animation"
     sx={{
       display: 'flex',
       justifyContent: 'center',
