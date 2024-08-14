@@ -1,79 +1,37 @@
+import { checkInPageServer } from '@/app/(authenticated)/check-in/__test__/check-in-test-utils';
 import {
   CHECK_INS_MATCHER,
   MEMBERS_MATCHER,
   renderWithProviders,
-} from '../../../../../test-utils';
-import { CHECK_INS_URL } from '@/infrastructure/api-client';
-import { screen, waitFor } from '@testing-library/react';
+} from '@/app/ui/test-utils';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { CheckIn, Member } from '@/core/entities';
 import { http, HttpResponse } from 'msw';
-import { setupServer } from 'msw/node';
 import CheckInPage from '../page';
 
-const mockMembers: Member[] = [
-  {
-    id: '1',
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john@example.com',
-    status: 'Active',
-    createdAt: '',
-    updatedAt: '',
-  },
-  {
-    id: '2',
-    firstName: 'Jane',
-    lastName: 'Smith',
-    email: 'jane@example.com',
-    status: 'Inactive',
-    createdAt: '',
-    updatedAt: '',
-  },
-];
+beforeAll(() => checkInPageServer.listen());
+afterEach(() => checkInPageServer.resetHandlers());
+afterAll(() => checkInPageServer.close());
 
-const mockCheckIns: CheckIn[] = [
-  {
-    id: '1',
-    memberId: '1',
-    dateTime: '2023-01-01T10:00:00Z',
-    member: mockMembers[0],
-  },
-  {
-    id: '2',
-    memberId: '2',
-    dateTime: '2023-01-02T11:00:00Z',
-    member: mockMembers[1],
-  },
-];
+function setup() {
+  const user = userEvent.setup();
+  const utils = renderWithProviders(<CheckInPage />);
 
-const server = setupServer(
-  http.get(MEMBERS_MATCHER, () => {
-    return HttpResponse.json(mockMembers);
-  }),
-  http.get(`*${CHECK_INS_URL}`, ({ request }) => {
-    const url = new URL(request.url);
-    const memberId = url.searchParams.get('memberId');
-    const filteredCheckIns = memberId
-      ? mockCheckIns.filter((checkIn) => checkIn.memberId === memberId)
-      : mockCheckIns;
-    return HttpResponse.json(filteredCheckIns);
-  }),
-  http.post(`*${CHECK_INS_URL}`, () => {
-    return HttpResponse.json(
-      { message: 'Check-in successful' },
-      { status: 201 },
-    );
-  }),
-  http.all('*', ({ request }) => {
-    console.warn(`Unhandled ${request.method} request to ${request.url}`);
-    return HttpResponse.json({ error: 'Not Found' }, { status: 404 });
-  }),
-);
-
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
+  return {
+    user,
+    ...utils,
+    selectMember: async (memberName: string) => {
+      const select = await screen.findByRole('combobox', {
+        name: /select member/i,
+      });
+      await user.click(select);
+      await user.click(screen.getByText(memberName));
+    },
+    clickCheckInButton: async () => {
+      await user.click(screen.getByRole('button', { name: 'Check In' }));
+    },
+  };
+}
 
 describe('CheckInPage', () => {
   test('renders the page title correctly', async () => {
@@ -87,7 +45,7 @@ describe('CheckInPage', () => {
   });
 
   test('displays error message when there is an error fetching data', async () => {
-    server.use(
+    checkInPageServer.use(
       http.get(MEMBERS_MATCHER, () => {
         return new HttpResponse(null, { status: 500 });
       }),
@@ -97,71 +55,53 @@ describe('CheckInPage', () => {
   });
 
   test('renders member select dropdown with correct options', async () => {
-    renderWithProviders(<CheckInPage />);
-    const select = await screen.findByLabelText('Select Member');
-    expect(select).toBeInTheDocument();
-    expect(screen.getByText('John')).toBeInTheDocument();
-    expect(screen.getByText('Doe')).toBeInTheDocument();
-    expect(screen.getByText('Jane')).toBeInTheDocument();
-    expect(screen.getByText('Smith')).toBeInTheDocument();
-  });
-
-  test('updates selected member when an option is chosen', async () => {
-    const user = userEvent.setup();
-    renderWithProviders(<CheckInPage />);
+    const { user } = setup();
     const select = await screen.findByRole('combobox', {
       name: /select member/i,
     });
+    expect(select).toBeInTheDocument();
     await user.click(select);
-    await user.click(screen.getByText('John Doe'));
+    expect(screen.getByText('John Doe')).toBeInTheDocument();
+    expect(screen.getByText('Jane Smith')).toBeInTheDocument();
+  });
+
+  test('updates selected member when an option is chosen', async () => {
+    const { selectMember } = setup();
+    await selectMember('John Doe');
+    const select = screen.getByRole('combobox', { name: /select member/i });
     expect(select).toHaveTextContent('John Doe');
   });
 
   test('disables check-in button when no member is selected', async () => {
-    renderWithProviders(<CheckInPage />);
+    setup();
     expect(
       await screen.findByRole('button', { name: 'Check In' }),
     ).toBeDisabled();
   });
 
   test('enables check-in button when a member is selected', async () => {
-    const user = userEvent.setup();
-    renderWithProviders(<CheckInPage />);
-    const select = await screen.findByRole('combobox', {
-      name: /select member/i,
-    });
-    await user.click(select);
-    await user.click(screen.getByText('Jane Smith'));
+    const { selectMember } = setup();
+    await selectMember('Jane Smith');
     expect(screen.getByRole('button', { name: 'Check In' })).toBeEnabled();
   });
 
   test('displays warning for inactive members', async () => {
-    const user = userEvent.setup();
-    renderWithProviders(<CheckInPage />);
-    const select = await screen.findByRole('combobox', {
-      name: /select member/i,
-    });
-    await user.click(select);
-    await user.click(screen.getByText('Jane Smith'));
+    const { selectMember } = setup();
+    await selectMember('Jane Smith');
     expect(
       await screen.findByText('Warning: The selected member is not active.'),
     ).toBeInTheDocument();
   });
 
   test('performs check-in when button is clicked', async () => {
-    const user = userEvent.setup();
-    renderWithProviders(<CheckInPage />);
-    const select = await screen.findByRole('combobox', {
-      name: /select member/i,
-    });
-    await user.click(select);
-    await user.click(screen.getByText('Jane Smith'));
-    await user.click(screen.getByRole('button', { name: 'Check In' }));
+    const { selectMember, clickCheckInButton } = setup();
+    await selectMember('Jane Smith');
+    await clickCheckInButton();
     expect(await screen.findByText('Check-in successful!')).toBeInTheDocument();
   });
 
   test('displays error message after failed check-in', async () => {
-    server.use(
+    checkInPageServer.use(
       http.post(CHECK_INS_MATCHER, () => {
         return HttpResponse.json(
           { message: 'Check-in failed' },
@@ -169,34 +109,90 @@ describe('CheckInPage', () => {
         );
       }),
     );
-    const user = userEvent.setup();
-    renderWithProviders(<CheckInPage />);
-    const select = await screen.findByRole('combobox', {
-      name: /select member/i,
-    });
-    await user.click(select);
-    await user.click(screen.getByText('Jane Smith'));
-    await user.click(screen.getByRole('button', { name: 'Check In' }));
+    const { selectMember, clickCheckInButton } = setup();
+    await selectMember('Jane Smith');
+    await clickCheckInButton();
     expect(await screen.findByText('Check-in failed')).toBeInTheDocument();
   });
 
   test('filters check-ins when a member is selected', async () => {
-    const user = userEvent.setup();
-    renderWithProviders(<CheckInPage />);
-    const select = await screen.findByRole('combobox', {
-      name: /select member/i,
-    });
-    await user.click(select);
-    await user.click(screen.getByText('John Doe'));
+    const { selectMember } = setup();
+
+    // Get all check-ins before filtering
+    const initialGrid = await screen.findByTestId('ag-grid');
+    const initialRows = within(initialGrid).getAllByRole('row');
+
+    // Select a specific member
+    await selectMember('John Doe');
+
+    // Wait for the grid to update
     await waitFor(() => {
-      expect(screen.getByTestId('ag-grid')).toBeInTheDocument();
+      const updatedGrid = screen.getByTestId('ag-grid');
+      const updatedRows = within(updatedGrid).getAllByRole('row');
+      expect(updatedRows.length).toBeLessThan(initialRows.length);
+    });
+
+    // Verify that all visible check-ins are for John Doe
+    const grid = screen.getByTestId('ag-grid');
+    const rows = within(grid).getAllByRole('row');
+    rows.slice(1).forEach((row) => {
+      // Skip header row
+      const cells = within(row).getAllByRole('gridcell');
+      expect(cells[2].textContent).toBe('John'); // First Name
+      expect(cells[3].textContent).toBe('Doe'); // Last Name
     });
   });
 
-  test('displays all check-ins when no member is selected', async () => {
-    renderWithProviders(<CheckInPage />);
-    await waitFor(() => {
-      expect(screen.getByTestId('ag-grid')).toBeInTheDocument();
+  test('displays all check-ins and filters when a member is selected', async () => {
+    const { selectMember } = setup();
+
+    // Helper function to get grid rows and their content
+    const getGridContent = async () => {
+      const grid = screen.getByTestId('ag-grid');
+      const rows = within(grid).getAllByRole('row');
+      const headerCells = within(rows[0]).getAllByRole('columnheader');
+      const firstNameIndex = headerCells.findIndex(
+        (cell) => cell.textContent?.trim() === 'First Name',
+      );
+      const lastNameIndex = headerCells.findIndex(
+        (cell) => cell.textContent?.trim() === 'Last Name',
+      );
+
+      // Slice skips the header row
+      const memberNames = rows.slice(1).map((row) => {
+        const cells = within(row).getAllByRole('gridcell');
+        return `${cells[firstNameIndex].textContent} ${cells[lastNameIndex].textContent}`;
+      });
+
+      return { rows, memberNames };
+    };
+
+    // Wait for the initial unfiltered grid to load
+    await screen.findByTestId('ag-grid');
+
+    // Get all check-ins in unfiltered state
+    const { rows: initialRows, memberNames: unfilteredNames } =
+      await getGridContent();
+    expect(initialRows.length).toBeGreaterThan(1); // Ensure we have some data
+
+    // Verify that check-ins for different members are present in unfiltered state
+    expect(unfilteredNames).toContain('John Doe');
+    expect(unfilteredNames).toContain('Jane Smith');
+
+    await selectMember('John Doe');
+
+    // Wait for the grid to update and verify filtering
+    await waitFor(async () => {
+      const { rows: filteredRows, memberNames: filteredNames } =
+        await getGridContent();
+      expect(filteredRows.length).toBeLessThan(initialRows.length);
+      expect(filteredNames.every((name) => name === 'John Doe')).toBe(true);
+
+      // Verify the number of filtered rows matches John's check-ins in unfiltered state
+      const johnDoeCheckInsCount = unfilteredNames.filter(
+        (name) => name === 'John Doe',
+      ).length;
+      expect(filteredRows.length - 1).toBe(johnDoeCheckInsCount); // -1 for header row
     });
   });
 });
