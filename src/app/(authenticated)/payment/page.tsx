@@ -35,11 +35,13 @@ const stripePromise = loadStripe(
 const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
-  const [amount, setAmount] = useState('10');
+  const [amount, setAmount] = useState('');
   const [memberId, setMemberId] = useState('');
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const { showSnackbar } = useSnackbar();
   const { data: members = [], isLoading: isMembersLoading } = useGetMembers();
+  const submitPaymentButtonDisabled =
+    isProcessingPayment || isMembersLoading || !memberId || !amount;
   const confirmPaymentMutation = useConfirmPayment();
   const initiatePaymentMutation = useInitiatePayment(async (data) => {
     if (!stripe || !elements) {
@@ -52,10 +54,11 @@ const PaymentForm = () => {
       },
     });
 
-    if (result.error) {
+    console.log('result', result);
+    if (result?.error) {
       showSnackbar(result.error.message || 'Payment failed', 'error');
       setIsProcessingPayment(false);
-    } else if (result.paymentIntent.status === 'succeeded') {
+    } else if (result?.paymentIntent.status === 'succeeded') {
       confirmPaymentMutation.mutate(data.paymentIntentId, {
         onSuccess: () => {
           setAmount('');
@@ -91,12 +94,12 @@ const PaymentForm = () => {
     <Paper elevation={3} sx={{ p: 3, mt: 3 }}>
       <form onSubmit={handleSubmit}>
         <FormControl fullWidth margin="normal">
-          <InputLabel id="member-select-label">Member</InputLabel>
+          <InputLabel id="member-select-label">Select Member</InputLabel>
           <Select
             labelId="member-select-label"
             id="member-select"
             value={memberId}
-            label="Member"
+            label="Select Member"
             onChange={(e) => setMemberId(e.target.value)}
             disabled={isMembersLoading}
           >
@@ -130,7 +133,7 @@ const PaymentForm = () => {
           variant="contained"
           color="primary"
           fullWidth
-          disabled={!stripe || isProcessingPayment || isMembersLoading}
+          disabled={submitPaymentButtonDisabled}
         >
           {isProcessingPayment ? <CircularProgress size={24} /> : 'Pay'}
         </Button>
