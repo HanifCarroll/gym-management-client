@@ -58,7 +58,7 @@ export const useDeleteMember = () => {
   return useMutation({
     mutationFn: (id: string) => memberService.deleteMember(id),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['members', 'list'] });
+      await queryClient.invalidateQueries({ queryKey: ['members'] });
       showSnackbar('Member deleted successfully!', 'success');
     },
     onError: (error) => {

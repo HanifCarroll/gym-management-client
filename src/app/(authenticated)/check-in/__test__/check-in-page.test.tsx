@@ -1,4 +1,4 @@
-import { checkInPageServer } from '@/app/(authenticated)/check-in/__test__/check-in-test-utils';
+import { checkInPageServer } from '@/app/(authenticated)/check-in/__test__/check-in-page-test-utils';
 import {
   CHECK_INS_MATCHER,
   MEMBERS_MATCHER,
