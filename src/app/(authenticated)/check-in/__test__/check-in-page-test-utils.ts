@@ -1,7 +1,7 @@
-import { CHECK_INS_URL } from '@/infrastructure/api-client';
 import { MEMBERS_MATCHER } from '@/app/ui/test-utils';
+import { CHECK_INS_URL } from '@/core/api-client';
 import { CheckIn, Member } from '@/core/entities';
-import { http, HttpResponse } from 'msw';
+import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 
 const mockMembers: Member[] = [

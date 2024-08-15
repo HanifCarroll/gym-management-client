@@ -7,7 +7,7 @@ import {
 } from '@testing-library/react';
 import { paymentHistoryPageServer } from '@/app/(authenticated)/payment-history/__test__/payment-history-page-test-utils';
 import { renderWithProviders } from '@/app/ui/test-utils';
-import { PAYMENTS_URL } from '@/infrastructure/api-client';
+import { PAYMENTS_URL } from '@/core/api-client';
 import { HttpResponse, http } from 'msw';
 
 beforeAll(() => paymentHistoryPageServer.listen());

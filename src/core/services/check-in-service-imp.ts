@@ -1,9 +1,12 @@
 import { CheckIn } from '@/core/entities';
-import { CheckInRepository } from '@/core/repositories';
-import { CheckInService } from '@/core/services';
+import { ApiCheckInRepository } from '@/core/repositories';
 
-export class CheckInServiceImpl implements CheckInService {
-  constructor(private checkInRepository: CheckInRepository) {}
+export class CheckInServiceImpl {
+  private checkInRepository: ApiCheckInRepository;
+
+  constructor(checkInRepository: ApiCheckInRepository) {
+    this.checkInRepository = checkInRepository;
+  }
 
   async createCheckIn(memberId: string): Promise<CheckIn> {
     return this.checkInRepository.createCheckIn(memberId);

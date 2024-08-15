@@ -1,9 +1,9 @@
+import { ApiPaymentRepository } from '../../../core/repositories';
+import { PaymentServiceImpl } from '../../../core/services';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@/app/ui/context';
+import { apiClient } from '@/core/api-client';
 import { Payment, PaymentWithMember } from '@/core/entities';
-import { apiClient } from '@/infrastructure/api-client';
-import { ApiPaymentRepository } from '@/infrastructure/repositories';
-import { PaymentServiceImpl } from '@/infrastructure/services';
 
 const paymentRepository = new ApiPaymentRepository(apiClient);
 const paymentService = new PaymentServiceImpl(paymentRepository);

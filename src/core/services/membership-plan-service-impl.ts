@@ -3,15 +3,13 @@ import {
   MembershipPlan,
   UpdateMembershipPlanData,
 } from '@/core/entities';
-import { MembershipPlanRepository } from '@/core/repositories';
-import { MembershipPlanService } from '@/core/services';
-import { ApiMembershipPlanRepository } from '@/infrastructure/repositories';
+import { ApiMembershipPlanRepository } from '@/core/repositories';
 
-export class MembershipPlanServiceImpl implements MembershipPlanService {
-  private membershipPlanRepository: MembershipPlanRepository;
+export class MembershipPlanServiceImpl {
+  private membershipPlanRepository: ApiMembershipPlanRepository;
 
   constructor(
-    membershipPlanRepository: MembershipPlanRepository = new ApiMembershipPlanRepository(),
+    membershipPlanRepository: ApiMembershipPlanRepository = new ApiMembershipPlanRepository(),
   ) {
     this.membershipPlanRepository = membershipPlanRepository;
   }

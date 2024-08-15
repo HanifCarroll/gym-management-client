@@ -1,6 +1,6 @@
 import { MEMBERS_MATCHER } from '@/app/ui/test-utils';
+import { MEMBERS_URL } from '@/core/api-client';
 import { Member, UpdateMemberData } from '@/core/entities';
-import { MEMBERS_URL } from '@/infrastructure/api-client';
 import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 

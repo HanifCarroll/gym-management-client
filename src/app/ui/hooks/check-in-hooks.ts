@@ -1,8 +1,8 @@
+import { ApiCheckInRepository } from '../../../core/repositories';
+import { CheckInServiceImpl } from '../../../core/services';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { apiClient } from '@/core/api-client';
 import { CheckIn } from '@/core/entities';
-import { apiClient } from '@/infrastructure/api-client';
-import { ApiCheckInRepository } from '@/infrastructure/repositories';
-import { CheckInServiceImpl } from '@/infrastructure/services';
 
 const checkInRepository = new ApiCheckInRepository(apiClient);
 const checkInService = new CheckInServiceImpl(checkInRepository);

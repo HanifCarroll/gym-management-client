@@ -1,9 +1,12 @@
 import { Payment, PaymentWithMember } from '@/core/entities';
-import { PaymentRepository } from '@/core/repositories';
-import { PaymentService } from '@/core/services';
+import { ApiPaymentRepository } from '@/core/repositories';
 
-export class PaymentServiceImpl implements PaymentService {
-  constructor(private paymentRepository: PaymentRepository) {}
+export class PaymentServiceImpl {
+  private paymentRepository: ApiPaymentRepository;
+
+  constructor(paymentRepository: ApiPaymentRepository) {
+    this.paymentRepository = paymentRepository;
+  }
 
   async initiatePayment(
     amount: number,

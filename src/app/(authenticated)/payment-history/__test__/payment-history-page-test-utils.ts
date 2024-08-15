@@ -1,6 +1,6 @@
 import { MEMBERS_MATCHER } from '@/app/ui/test-utils';
+import { PAYMENTS_URL } from '@/core/api-client';
 import { Member, Payment } from '@/core/entities';
-import { PAYMENTS_URL } from '@/infrastructure/api-client';
 import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 

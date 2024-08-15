@@ -1,13 +1,12 @@
+import { MEMBERSHIP_PLANS_URL, apiClient } from '@/core/api-client';
 import {
   CreateMembershipPlanData,
   MembershipPlan,
   UpdateMembershipPlanData,
 } from '@/core/entities';
-import { MembershipPlanRepository } from '@/core/repositories';
-import { MEMBERSHIP_PLANS_URL, apiClient } from '@/infrastructure/api-client';
 import { AxiosInstance } from 'axios';
 
-export class ApiMembershipPlanRepository implements MembershipPlanRepository {
+export class ApiMembershipPlanRepository {
   private apiClient: AxiosInstance;
 
   constructor(apiClientInstance: AxiosInstance = apiClient) {

@@ -1,9 +1,8 @@
+import { MEMBERS_URL, apiClient } from '@/core/api-client';
 import { CreateMemberData, Member, UpdateMemberData } from '@/core/entities';
-import { MemberRepository } from '@/core/repositories';
-import { MEMBERS_URL, apiClient } from '@/infrastructure/api-client';
 import { AxiosInstance } from 'axios';
 
-export class ApiMemberRepository implements MemberRepository {
+export class ApiMemberRepository {
   apiClient: AxiosInstance;
 
   constructor() {

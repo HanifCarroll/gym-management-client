@@ -1,6 +1,6 @@
 import { MEMBERSHIP_PLANS_MATCHER } from '@/app/ui/test-utils';
+import { MEMBERSHIP_PLANS_URL } from '@/core/api-client';
 import { MembershipPlan, UpdateMembershipPlanData } from '@/core/entities';
-import { MEMBERSHIP_PLANS_URL } from '@/infrastructure/api-client';
 import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 
