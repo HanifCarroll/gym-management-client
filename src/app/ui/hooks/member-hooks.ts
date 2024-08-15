@@ -8,7 +8,6 @@ const memberRepository = new ApiMemberRepository();
 const memberService = new MemberServiceImpl(memberRepository);
 
 export const useRegisterMember = () => {
-  const { showSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
   return useMutation<Member, Error, CreateMemberData>({
