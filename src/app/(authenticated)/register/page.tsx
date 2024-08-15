@@ -13,7 +13,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useRegisterMember } from '@/app/ui/hooks';
+import { useRegisterMember, useSnackbar } from '@/app/ui/hooks';
 import { CreateMemberData, MemberStatus } from '@/core/entities';
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 
@@ -28,6 +28,7 @@ const initialFormData: CreateMemberData = {
 const RegisterMember: React.FC = () => {
   const [formData, setFormData] = useState<CreateMemberData>(initialFormData);
   const registerMemberMutation = useRegisterMember();
+  const { showSnackbar } = useSnackbar();
 
   const handleChange = (
     event:
@@ -44,7 +45,11 @@ const RegisterMember: React.FC = () => {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     registerMemberMutation.mutate(formData, {
-      onSuccess: () => setFormData(initialFormData),
+      onSuccess: () => {
+        showSnackbar('Member registered successfully!', 'success');
+        setFormData(initialFormData);
+      },
+      onError: () => showSnackbar('Failed to register member', 'error'),
     });
   };
 

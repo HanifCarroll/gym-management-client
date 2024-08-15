@@ -15,10 +15,8 @@ export const useRegisterMember = () => {
     mutationFn: (data: CreateMemberData) => memberService.createMember(data),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['members'] });
-      showSnackbar('Member registered successfully!', 'success');
     },
     onError: (error) => {
-      showSnackbar('Failed to register member. Please try again.', 'error');
       console.error('Error registering member:', error);
     },
   });
