@@ -10,7 +10,8 @@
     "test:watch": "vitest watch",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "husky"
   },
   "dependencies": {
     "@emotion/react": "^11.13.0",
@@ -30,6 +31,8 @@
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.4.0",
+    "@commitlint/config-conventional": "^19.2.2",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.4.8",
     "@testing-library/react": "^16.0.0",
@@ -48,8 +51,10 @@
     "eslint-config-next": "^14.2.5",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
+    "husky": "^9.1.4",
     "jest-environment-jsdom": "^29.7.0",
     "jsdom": "^24.1.1",
+    "lint-staged": "^15.2.9",
     "msw": "^2.3.5",
     "prettier": "^3.3.3",
     "prettier-plugin-sort-imports": "^1.8.6",
