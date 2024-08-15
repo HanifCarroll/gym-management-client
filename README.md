@@ -46,9 +46,9 @@ The architecture is divided into two main layers:
 **Core Business Logic Layer** (located in `src/core`):
 This layer contains the heart of the application, free from framework-specific code. It includes:
 
-Entities: Data models representing core business objects
-Repositories: Implementations for data access and manipulation
-Services: Business logic implementations
+- Entities: Data models representing core business objects
+- Repositories: Implementations for data access and manipulation
+- Services: Business logic implementations
 
 **Framework Layer** (located in `src/app`):
 This layer contains all the Next.js and React-specific code, including:
