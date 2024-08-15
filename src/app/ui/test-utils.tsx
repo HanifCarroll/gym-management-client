@@ -5,6 +5,7 @@ import { AuthProvider, SnackbarProvider } from '@/app/ui/context';
 import React from 'react';
 
 export const MEMBERS_MATCHER = '*/members';
+export const MEMBERSHIP_PLANS_MATCHER = '*/membership-plans';
 export const CHECK_INS_MATCHER = '*/check-ins';
 
 const AllTheProviders: React.FC<{ children: React.ReactNode }> = ({

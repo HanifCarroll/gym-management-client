@@ -93,7 +93,7 @@ const MembershipPlanPage: React.FC = () => {
         onClick={() => handleOpenDialog()}
         sx={{ mb: 2 }}
       >
-        Add New Plan
+        Create New Plan
       </Button>
       <TableContainer component={Paper}>
         <Table>
