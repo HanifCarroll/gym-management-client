@@ -54,7 +54,6 @@ const PaymentForm = () => {
       },
     });
 
-    console.log('result', result);
     if (result?.error) {
       showSnackbar(result.error.message || 'Payment failed', 'error');
       setIsProcessingPayment(false);
