@@ -15,12 +15,8 @@ for gym owners and administrators to manage members, memberships, payments, and 
 8. [State Management](#state-management)
 9. [Styling](#styling)
 10. [Code Quality and Formatting](#code-quality-and-formatting)
-11. [Performance Considerations](#performance-considerations)
-12. [Authentication](#authentication)
-13. [API Integration](#api-integration)
-14. [Future Improvements](#future-improvements)
-15. [License](#license)
-16. [Contact Information](#contact-information)
+11. [License](#license)
+12. [Contact Information](#contact-information)
 
 ## Features
 
@@ -64,33 +60,34 @@ This layer contains all the Next.js and React-specific code, including:
 
 This modified architecture promotes:
 
-Clear separation between business logic and framework-specific code
-Improved testability of core business logic
-Easier maintenance and updates of the UI layer
-Flexibility to change or upgrade the frontend framework with minimal impact on business logic
+- Clear separation between business logic and framework-specific code
+- Improved testability of core business logic
+- Easier maintenance and updates of the UI layer
+- Flexibility to change or upgrade the frontend framework with minimal impact on business logic
 
 The removal of separate interface definitions simplifies the architecture while maintaining a clear separation of
-concerns. This approach balances the benefits of Clean Architecture with the practical needs of frontend development.
+concerns. This approach balances the benefits of Clean Architecture with the practical needs of frontend development for
+a project of this size.
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js (v18 or later)
-- npm (v7 or later)
+- Node.js (v20 or later)
+- npm (v10 or later)
 
 ### Installation
 
 1. Clone the repository:
 
    ```
-   git clone https://github.com/yourusername/gym-management-frontend.git
+   git clone https://github.com/HanifCarroll/gym-management-client.git
    ```
 
 2. Navigate to the project directory:
 
    ```
-   cd gym-management-frontend
+   cd gym-management-client
    ```
 
 3. Install dependencies:
@@ -103,7 +100,7 @@ concerns. This approach balances the benefits of Clean Architecture with the pra
 1. Copy the `.env.example` file to `.env.local`:
 
    ```
-   cp .env.example .env.local
+   cp .env.example .env
    ```
 
 2. Edit `.env.local` and set the required environment variables:
@@ -111,6 +108,12 @@ concerns. This approach balances the benefits of Clean Architecture with the pra
    NEXT_PUBLIC_API_BASE_URL=http://localhost:3001
    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
    ```
+
+The api base url should be wherever you are running the corresponding gym-management-server project.
+
+Your stripe publishable key can be retrieved from your Stripe dashboard.
+
+Please make sure that test mode is enabled and that you grab the corresponding key. It should start with pk*test*.
 
 ## Running the Application
 
@@ -138,41 +141,22 @@ For watch mode:
 npm run test:watch
 ```
 
-Our testing strategy includes:
-
-- Unit tests for utility functions and hooks
-- Integration tests for complex components
-- End-to-end tests for critical user flows
-
 ## Component Structure
 
 The application follows a modular component structure:
 
 - `src/app`: Next.js 14 App Router pages and layouts
-- `src/core`: Core business logic, entities, and interfaces
-- `src/infrastructure`: Implementation of core interfaces, API clients
-- `src/ui/components`: Reusable UI components
-- `src/ui/hooks`: Custom React hooks for shared logic
+- `src/core`: Core business logic and entities
+- `src/app/ui`: Components, hooks, and contexts specific to React.
 
 ## State Management
 
-This application uses a combination of React Query for server state management and local React state (via `useState`
-and `useReducer`) for UI state.
-
-React Query provides:
-
-- Automatic caching and refetching
-- Easy pagination and infinite scrolling
-- Optimistic updates for a smoother user experience
+This application uses a combination of React Query for server state management and local React state (via `useState`)
+for UI state.
 
 ## Styling
 
 Styling is primarily handled through Material-UI (MUI), which provides a consistent and customizable design system.
-Custom styling is applied using:
-
-- MUI's `makeStyles` for component-specific styles
-- Global styles in `src/app/globals.css`
-- Tailwind CSS for utility classes and rapid prototyping
 
 ## Code Quality and Formatting
 
@@ -195,50 +179,6 @@ To ensure code quality and consistency, this project uses:
 - **Husky**: For running git hooks
   - Pre-commit hook to run lint-staged
 
-To manually run all checks:
-
-```
-npm run validate
-```
-
-## Performance Considerations
-
-Performance optimizations include:
-
-- Code splitting and lazy loading using Next.js
-- Memoization of expensive computations with `useMemo` and `useCallback`
-- Efficient list rendering with virtualization for large datasets
-- Image optimization using Next.js Image component
-
-## Authentication
-
-Authentication is handled using JWT (JSON Web Tokens). The authentication flow includes:
-
-- Login page for user credentials
-- JWT storage in secure HTTP-only cookies
-- Automatic token refresh mechanism
-- Protected routes using Higher Order Components (HOCs)
-
-## API Integration
-
-The frontend interacts with the backend API using Axios. API calls are abstracted into service layers, allowing for easy
-mocking in tests and flexibility in implementation.
-
-Key aspects of API integration:
-
-- Centralized API client configuration
-- Request/response interceptors for common operations (e.g., adding auth headers)
-- Error handling and retry logic
-
-## Future Improvements
-
-Planned enhancements for the frontend include:
-
-- Implementing real-time updates using WebSockets
-- Adding more data visualization and analytics features
-- Enhancing accessibility features
-- Implementing a progressive web app (PWA) for offline capabilities
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
@@ -247,7 +187,10 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 For any inquiries about this project, please contact:
 
-Your Name
-Email: your.email@example.com
-LinkedIn: https://www.linkedin.com/in/yourprofile
-GitHub: https://github.com/yourusername
+Hanif Carroll
+
+Email: [HanifCarroll@gmail.com](mailto:HanifCarroll@gmail.com)
+
+LinkedIn: https://www.linkedin.com/in/hanifcarroll
+
+GitHub: https://github.com/HanifCarroll
