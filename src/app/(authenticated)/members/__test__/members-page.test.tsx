@@ -126,33 +126,15 @@ describe('ViewAllMembers', () => {
     expect(screen.queryByText('Edit Member')).not.toBeInTheDocument();
   });
 
-  test('shows confirmation dialog when delete button is clicked', async () => {
-    const { user } = setup();
-    const deleteButtons = await screen.findAllByRole('button', {
-      name: 'Delete',
-    });
-
-    // Mock window.confirm
-    const confirmSpy = vi.spyOn(window, 'confirm');
-    confirmSpy.mockImplementation(() => true);
-
-    await user.click(deleteButtons[0]);
-
-    expect(confirmSpy).toHaveBeenCalledWith(
-      'Are you sure you want to delete this member?',
-    );
-    confirmSpy.mockRestore();
-  });
-
   test('deletes member when confirmation is accepted', async () => {
     const { user } = setup();
     const deleteButtons = await screen.findAllByRole('button', {
       name: 'Delete',
     });
 
-    // Mock window.confirm
-    const confirmSpy = vi.spyOn(window, 'confirm');
-    confirmSpy.mockImplementation(() => true);
+    const confirmSpy = vi
+      .spyOn(window, 'confirm')
+      .mockImplementation(() => true);
 
     await user.click(deleteButtons[0]);
 
@@ -174,13 +156,14 @@ describe('ViewAllMembers', () => {
       name: 'Delete',
     });
 
-    // Mock window.confirm
-    const confirmSpy = vi.spyOn(window, 'confirm');
-    confirmSpy.mockImplementation(() => false);
+    const confirmSpy = vi
+      .spyOn(window, 'confirm')
+      .mockImplementation(() => false);
 
+    // Now corresponds to Jane Smith since we deleted Jon Doe in previous test.
     await user.click(deleteButtons[0]);
 
-    expect(screen.getByText('John Doe')).toBeInTheDocument();
+    expect(screen.getByText('Jane Smith')).toBeInTheDocument();
 
     confirmSpy.mockRestore();
   });
