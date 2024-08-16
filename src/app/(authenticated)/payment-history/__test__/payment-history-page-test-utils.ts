@@ -46,7 +46,7 @@ export const paymentHistoryPageServer = setupServer(
   http.get(MEMBERS_MATCHER, () => {
     return HttpResponse.json(mockMembers);
   }),
-  http.get(`*${PAYMENTS_URL}/history`, () => {
+  http.get(`*${PAYMENTS_URL}`, () => {
     return HttpResponse.json(mockPayments);
   }),
   http.all('*', ({ request }) => {

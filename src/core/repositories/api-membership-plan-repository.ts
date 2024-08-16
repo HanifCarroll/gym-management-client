@@ -19,13 +19,6 @@ export class ApiMembershipPlanRepository {
     return response.data;
   }
 
-  async getById(id: string): Promise<MembershipPlan | null> {
-    const response = await this.apiClient.get<MembershipPlan>(
-      `${MEMBERSHIP_PLANS_URL}/${id}`,
-    );
-    return response.data;
-  }
-
   async create(plan: CreateMembershipPlanData): Promise<MembershipPlan> {
     const response = await this.apiClient.post<MembershipPlan>(
       MEMBERSHIP_PLANS_URL,

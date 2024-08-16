@@ -27,7 +27,7 @@ describe('PaymentHistory', () => {
 
   test('displays error message when there is an error fetching data', async () => {
     paymentHistoryPageServer.use(
-      http.get(`*${PAYMENTS_URL}/history`, () => {
+      http.get(`*${PAYMENTS_URL}`, () => {
         return new HttpResponse(null, { status: 500 });
       }),
     );

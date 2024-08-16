@@ -29,15 +29,13 @@ export class ApiPaymentRepository {
   }
 
   async getPaymentHistory(): Promise<Payment[]> {
-    const response = await this.apiClient.get<Payment[]>(
-      `${PAYMENTS_URL}/history`,
-    );
+    const response = await this.apiClient.get<Payment[]>(`${PAYMENTS_URL}`);
     return response.data;
   }
 
   async getPaymentsWithMembers(): Promise<PaymentWithMember[]> {
     const [paymentsResponse, membersResponse] = await Promise.all([
-      this.apiClient.get<Payment[]>(`${PAYMENTS_URL}/history`),
+      this.apiClient.get<Payment[]>(`${PAYMENTS_URL}`),
       this.apiClient.get<Member[]>(MEMBERS_URL),
     ]);
 
