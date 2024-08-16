@@ -106,22 +106,26 @@ const MembershipPlanPage: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {plans.map((plan) => (
-              <MembershipPlanRow
-                key={plan.id}
-                plan={plan}
-                onEdit={handleOpenDialog}
-                onDelete={deleteMutation.mutate}
-              />
-            ))}
+            {plans
+              .sort((a, b) => a.duration - b.duration)
+              .map((plan) => (
+                <MembershipPlanRow
+                  key={plan.id}
+                  plan={plan}
+                  onEdit={handleOpenDialog}
+                  onDelete={deleteMutation.mutate}
+                />
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <MembershipPlanDialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        plan={editingPlan}
-      />
+      {openDialog ? (
+        <MembershipPlanDialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          plan={editingPlan}
+        />
+      ) : null}
     </Container>
   );
 };

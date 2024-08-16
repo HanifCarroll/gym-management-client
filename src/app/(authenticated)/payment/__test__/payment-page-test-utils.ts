@@ -1,6 +1,6 @@
-import { MEMBERS_MATCHER } from '@/app/ui/test-utils';
+import { MEMBERSHIP_PLANS_MATCHER, MEMBERS_MATCHER } from '@/app/ui/test-utils';
 import { PAYMENTS_URL } from '@/core/api-client';
-import { Member } from '@/core/entities';
+import { Member, MembershipPlan } from '@/core/entities';
 import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 
@@ -27,9 +27,27 @@ const mockMembers: Member[] = [
   },
 ];
 
+const mockMembershipPlans: MembershipPlan[] = [
+  {
+    id: '1',
+    name: '1 Month',
+    price: 1000,
+    duration: 1,
+  },
+  {
+    id: '2',
+    name: '6 Month',
+    price: 5000,
+    duration: 6,
+  },
+];
+
 export const paymentPageServer = setupServer(
   http.get(MEMBERS_MATCHER, () => {
     return HttpResponse.json(mockMembers);
+  }),
+  http.get(MEMBERSHIP_PLANS_MATCHER, () => {
+    return HttpResponse.json(mockMembershipPlans);
   }),
   http.post(`*${PAYMENTS_URL}/initiate`, () => {
     return HttpResponse.json({

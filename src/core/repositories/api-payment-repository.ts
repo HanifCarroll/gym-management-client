@@ -5,14 +5,22 @@ import { AxiosInstance } from 'axios';
 export class ApiPaymentRepository {
   constructor(private apiClient: AxiosInstance) {}
 
-  async initiatePayment(
-    amount: number,
-    memberId: string,
-  ): Promise<{ clientSecret: string; paymentIntentId: string }> {
+  async initiatePayment({
+    amount,
+    memberId,
+    planId,
+  }: {
+    amount: number;
+    memberId: string;
+    planId: string;
+  }): Promise<{
+    clientSecret: string;
+    paymentIntentId: string;
+  }> {
     const response = await this.apiClient.post<{
       clientSecret: string;
       paymentIntentId: string;
-    }>(`${PAYMENTS_URL}/initiate`, { amount, memberId });
+    }>(`${PAYMENTS_URL}/initiate`, { amount, memberId, planId });
     return response.data;
   }
 

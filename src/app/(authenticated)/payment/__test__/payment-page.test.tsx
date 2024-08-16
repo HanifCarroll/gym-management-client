@@ -1,5 +1,9 @@
 import PaymentPage from '../page';
-import { screen, waitFor } from '@testing-library/react';
+import {
+  screen,
+  waitFor,
+  waitForElementToBeRemoved,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { paymentPageServer } from '@/app/(authenticated)/payment/__test__/payment-page-test-utils';
 import { renderWithProviders } from '@/app/ui/test-utils';
@@ -48,6 +52,13 @@ async function setup() {
       await user.click(select);
       await user.click(screen.getByText(memberName));
     },
+    selectMembershipPlan: async (membershipPlanName: string) => {
+      const select = await screen.findByRole('combobox', {
+        name: /select plan/i,
+      });
+      await user.click(select);
+      await user.click(screen.getByText(membershipPlanName));
+    },
     ...utils,
   };
 }
@@ -69,50 +80,66 @@ describe('PaymentPage', () => {
 
   test('displays member select dropdown with correct options', async () => {
     await setup();
-    const memberSelect = screen.getByLabelText(/member/i);
+    const memberSelect = await screen.findByRole('combobox', {
+      name: /select member/i,
+    });
     await userEvent.click(memberSelect);
     expect(screen.getByText('John Doe')).toBeInTheDocument();
     expect(screen.getByText('Jane Smith')).toBeInTheDocument();
   });
 
+  test('displays membership plan select dropdown with correct options', async () => {
+    await setup();
+    const membershipPlanSelect = await screen.findByRole('combobox', {
+      name: /select plan/i,
+    });
+    await userEvent.click(membershipPlanSelect);
+    expect(screen.getByText('1 Month')).toBeInTheDocument();
+    expect(screen.getByText('6 Month')).toBeInTheDocument();
+  });
+
   test('disables submit button when form is invalid', async () => {
     const { selectMember } = await setup();
+    await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'));
     const payButton = screen.getByRole('button', { name: /pay/i });
     expect(payButton).toBeDisabled();
 
-    // Select a member but leave amount empty
+    // Select a member but leave membership plan empty
     await selectMember('John Doe');
-    screen.debug(undefined, Infinity);
     expect(payButton).toBeDisabled();
   });
 
   test('enables submit button when form is valid', async () => {
-    const { user, selectMember } = await setup();
+    const { selectMember, selectMembershipPlan } = await setup();
+    await waitForElementToBeRemoved(() => screen.queryByRole('progressbar'));
     const payButton = screen.getByRole('button', { name: /pay/i });
 
     await selectMember('John Doe');
-    await user.type(screen.getByLabelText(/amount/i), '50');
+    await selectMembershipPlan('1 Month');
 
     expect(payButton).toBeEnabled();
   });
 
   test('shows success message and clears form for successful payment', async () => {
-    const { user, selectMember } = await setup();
+    const { user, selectMember, selectMembershipPlan } = await setup();
 
     await selectMember('John Doe');
-    await user.type(screen.getByLabelText(/amount/i), '50');
+    await selectMembershipPlan('1 Month');
 
-    screen.debug(undefined, Infinity);
     const payButton = screen.getByRole('button', { name: /pay/i });
     await user.click(payButton);
 
     await waitFor(async () => {
       expect(screen.getByText(/payment successful/i)).toBeInTheDocument();
     });
-    const select = await screen.findByRole('combobox', {
+    const memberSelect = await screen.findByRole('combobox', {
       name: /select member/i,
     });
-    expect(select).not.toHaveTextContent('John Doe');
+    const membershipPlanSelect = await screen.findByRole('combobox', {
+      name: /select plan/i,
+    });
+    expect(memberSelect).not.toHaveTextContent('John Doe');
+    expect(membershipPlanSelect).not.toHaveTextContent('1 Month');
     expect(screen.getByLabelText(/amount/i)).toHaveValue(null);
   });
 });

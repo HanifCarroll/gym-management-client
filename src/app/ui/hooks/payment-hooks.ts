@@ -1,30 +1,32 @@
-import { ApiPaymentRepository } from '../../../core/repositories';
-import { PaymentServiceImpl } from '../../../core/services';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@/app/ui/context';
 import { apiClient } from '@/core/api-client';
 import { Payment, PaymentWithMember } from '@/core/entities';
+import { ApiPaymentRepository } from '@/core/repositories';
+import { PaymentServiceImpl } from '@/core/services';
 
 const paymentRepository = new ApiPaymentRepository(apiClient);
 const paymentService = new PaymentServiceImpl(paymentRepository);
 
 export const useInitiatePayment = (
-  onSuccess?: (data: { clientSecret: string; paymentIntentId: string }) => void,
+  onSuccess: (data: { clientSecret: string; paymentIntentId: string }) => void,
+  onFailure: () => void,
 ) => {
   const { showSnackbar } = useSnackbar();
   return useMutation<
     { clientSecret: string; paymentIntentId: string },
     Error,
-    { amount: number; memberId: string }
+    { amount: number; memberId: string; planId: string }
   >({
-    mutationFn: ({ amount, memberId }) =>
-      paymentService.initiatePayment(amount, memberId),
+    mutationFn: ({ amount, memberId, planId }) =>
+      paymentService.initiatePayment({ amount, memberId, planId }),
     onSuccess: (data) => {
-      onSuccess?.(data);
+      onSuccess(data);
     },
     onError: (error) => {
       showSnackbar('Failed to initiate payment. Please try again.', 'error');
       console.error('Error initiating payment:', error);
+      onFailure();
     },
   });
 };

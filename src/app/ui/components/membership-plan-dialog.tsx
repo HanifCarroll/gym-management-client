@@ -11,7 +11,7 @@ import {
   useUpdateMembershipPlan,
 } from '@/app/ui/hooks/membership-plan-hooks';
 import { MembershipPlan } from '@/core/entities';
-import React from 'react';
+import React, { useState } from 'react';
 
 interface MembershipPlanDialogProps {
   open: boolean;
@@ -24,6 +24,7 @@ export const MembershipPlanDialog: React.FC<MembershipPlanDialogProps> = ({
   onClose,
   plan,
 }) => {
+  const [planCost, setPlanCost] = useState(plan?.price?.toString());
   const createMutation = useCreateMembershipPlan();
   const updateMutation = useUpdateMembershipPlan();
 
@@ -78,9 +79,22 @@ export const MembershipPlanDialog: React.FC<MembershipPlanDialogProps> = ({
             margin="dense"
             name="price"
             label="Price"
-            type="number"
+            type="text"
             fullWidth
+            onChange={(event) => {
+              const newValue = event.target.value;
+
+              // This regex allows only numbers and one decimal point
+              if (/^\d*\.?\d*$/.test(newValue)) {
+                setPlanCost(newValue);
+              }
+            }}
+            value={planCost}
             defaultValue={plan?.price || ''}
+            inputProps={{
+              inputMode: 'decimal',
+              pattern: '[0-9]*[.,]?[0-9]*',
+            }}
           />
         </DialogContent>
         <DialogActions>

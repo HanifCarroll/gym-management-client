@@ -8,11 +8,19 @@ export class PaymentServiceImpl {
     this.paymentRepository = paymentRepository;
   }
 
-  async initiatePayment(
-    amount: number,
-    memberId: string,
-  ): Promise<{ clientSecret: string; paymentIntentId: string }> {
-    return this.paymentRepository.initiatePayment(amount, memberId);
+  async initiatePayment({
+    amount,
+    memberId,
+    planId,
+  }: {
+    amount: number;
+    memberId: string;
+    planId: string;
+  }): Promise<{
+    clientSecret: string;
+    paymentIntentId: string;
+  }> {
+    return this.paymentRepository.initiatePayment({ amount, memberId, planId });
   }
 
   async confirmPayment(paymentIntentId: string): Promise<void> {

@@ -20,11 +20,13 @@ import {
   useStripe,
 } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import { LoadingAnimation } from '@/app/ui/components';
 import { useSnackbar } from '@/app/ui/context';
 import {
   useConfirmPayment,
   useGetMembers,
   useInitiatePayment,
+  useMembershipPlans,
 } from '@/app/ui/hooks';
 import React, { useEffect, useState } from 'react';
 
@@ -35,39 +37,55 @@ const stripePromise = loadStripe(
 const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
-  const [amount, setAmount] = useState('');
   const [memberId, setMemberId] = useState('');
+  const [planId, setPlanId] = useState('');
+  const [planPrice, setPlanPrice] = useState('');
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const { showSnackbar } = useSnackbar();
-  const { data: members = [], isLoading: isMembersLoading } = useGetMembers();
+  const {
+    data: members = [],
+    isLoading: isMembersLoading,
+    isError: isMembersError,
+  } = useGetMembers();
+  const {
+    data: plans = [],
+    isLoading: isPlansLoading,
+    isError: isPlansError,
+  } = useMembershipPlans();
+
+  const isLoading = isMembersLoading || isPlansLoading;
+  const isError = isMembersError || isPlansError;
   const submitPaymentButtonDisabled =
-    isProcessingPayment || isMembersLoading || !memberId || !amount;
+    isProcessingPayment || isMembersLoading || !memberId || !planId;
   const confirmPaymentMutation = useConfirmPayment();
-  const initiatePaymentMutation = useInitiatePayment(async (data) => {
-    if (!stripe || !elements) {
-      throw new Error('Stripe has not loaded');
-    }
+  const initiatePaymentMutation = useInitiatePayment(
+    async (data) => {
+      if (!stripe || !elements) {
+        throw new Error('Stripe has not loaded');
+      }
 
-    const result = await stripe.confirmCardPayment(data.clientSecret, {
-      payment_method: {
-        card: elements.getElement(CardElement)!,
-      },
-    });
-
-    if (result?.error) {
-      showSnackbar(result.error.message || 'Payment failed', 'error');
-      setIsProcessingPayment(false);
-    } else if (result?.paymentIntent.status === 'succeeded') {
-      confirmPaymentMutation.mutate(data.paymentIntentId, {
-        onSuccess: () => {
-          setAmount('');
-          setMemberId('');
-          elements?.getElement(CardElement)?.clear();
+      const result = await stripe.confirmCardPayment(data.clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement)!,
         },
-        onSettled: () => setIsProcessingPayment(false),
       });
-    }
-  });
+
+      if (result?.error) {
+        showSnackbar(result.error.message || 'Payment failed', 'error');
+        setIsProcessingPayment(false);
+      } else if (result?.paymentIntent.status === 'succeeded') {
+        confirmPaymentMutation.mutate(data.paymentIntentId, {
+          onSuccess: () => {
+            setMemberId('');
+            setPlanId('');
+            elements?.getElement(CardElement)?.clear();
+          },
+          onSettled: () => setIsProcessingPayment(false),
+        });
+      }
+    },
+    () => setIsProcessingPayment(false),
+  );
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -84,15 +102,24 @@ const PaymentForm = () => {
 
     setIsProcessingPayment(true);
     initiatePaymentMutation.mutate({
-      amount: Math.round(parseFloat(amount) * 100), // Convert to cents
+      amount: Math.round(parseFloat(planPrice) * 100), // Convert to cents
       memberId,
+      planId,
     });
   };
+
+  if (isLoading) {
+    return <LoadingAnimation />;
+  }
+
+  if (isError) {
+    return <Typography color="error">Error loading payment page</Typography>;
+  }
 
   return (
     <Paper elevation={3} sx={{ p: 3, mt: 3 }}>
       <form onSubmit={handleSubmit}>
-        <FormControl fullWidth margin="normal">
+        <FormControl required fullWidth margin="normal">
           <InputLabel id="member-select-label">Select Member</InputLabel>
           <Select
             labelId="member-select-label"
@@ -109,13 +136,38 @@ const PaymentForm = () => {
             ))}
           </Select>
         </FormControl>
+        <FormControl required fullWidth margin="normal">
+          <InputLabel id="plan-select-label">Select Plan</InputLabel>
+          <Select
+            labelId="plan-select-label"
+            id="plan-select"
+            value={planId}
+            label="Select Plan"
+            onChange={(e) => {
+              const plan = plans.find((p) => p.id === e.target.value);
+              if (plan) {
+                setPlanId(e.target.value);
+                setPlanPrice(plan.price.toString());
+              }
+            }}
+            disabled={isPlansLoading}
+          >
+            {plans
+              .sort((a, b) => a.duration - b.duration)
+              .map((plan) => (
+                <MenuItem key={plan.id} value={plan.id}>
+                  {plan.name}
+                </MenuItem>
+              ))}
+          </Select>
+        </FormControl>
         <TextField
+          disabled
           label="Amount"
           variant="outlined"
           fullWidth
           type="number"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
+          value={planId ? planPrice : ''}
           margin="normal"
           InputProps={{ startAdornment: '$' }}
         />
