@@ -14,8 +14,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
 
 const LoginPage: React.FC = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { isAuthenticated, login } = useAuth();
   const searchParams = useSearchParams();
@@ -24,16 +22,12 @@ const LoginPage: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (username === 'admin' && password === 'password') {
-      login();
-      const redirect = searchParams.get('redirect');
-      if (redirect && redirect !== '/login') {
-        router.push(redirect); // Ensure it redirects immediately after login
-      } else {
-        router.push('/members');
-      }
+    login();
+    const redirect = searchParams.get('redirect');
+    if (redirect && redirect !== '/login') {
+      router.push(redirect); // Ensure it redirects immediately after login
     } else {
-      setError('Invalid username or password');
+      router.push('/members');
     }
   };
 
@@ -65,8 +59,8 @@ const LoginPage: React.FC = () => {
               name="username"
               autoComplete="username"
               autoFocus
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              InputProps={{ readOnly: true }}
+              value={'admin'}
             />
             <TextField
               margin="normal"
@@ -77,8 +71,8 @@ const LoginPage: React.FC = () => {
               type="password"
               id="password"
               autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={'password'}
+              InputProps={{ readOnly: true }}
             />
             {error && (
               <Typography color="error" align="center" sx={{ mt: 2 }}>
