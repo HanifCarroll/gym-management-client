@@ -30,7 +30,9 @@ interface MembersTableProps {
   initialMembers: Member[];
 }
 
-export default function MembersTable({ initialMembers }: MembersTableProps) {
+export default function MembersTable({
+  initialMembers = [],
+}: MembersTableProps) {
   const [members, setMembers] = useState<Member[]>(initialMembers);
   const [editingMember, setEditingMember] = useState<Member | null>(null);
 
