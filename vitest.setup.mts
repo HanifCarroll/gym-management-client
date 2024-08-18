@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom';
 
-// Mock useRouter:
 vi.mock('next/navigation', () => ({
   useRouter() {
     return {
@@ -9,4 +8,8 @@ vi.mock('next/navigation', () => ({
     };
   },
   usePathname: vi.fn().mockReturnValue('/'),
+}));
+
+vi.mock('next/cache', () => ({
+  revalidatePath: vi.fn(),
 }));

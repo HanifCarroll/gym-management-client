@@ -7,16 +7,16 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { viewAllMembersPageServer } from '@/app/(authenticated)/members/__test__/members-page-test-utils';
-import { MEMBERS_MATCHER, renderWithProviders } from '@/app/ui/test-utils';
-import { HttpResponse, http } from 'msw';
+import { renderWithProviders } from '@/app/ui/test-utils';
 
 beforeAll(() => viewAllMembersPageServer.listen());
 afterEach(() => viewAllMembersPageServer.resetHandlers());
 afterAll(() => viewAllMembersPageServer.close());
 
-function setup() {
+async function setup() {
   const user = userEvent.setup();
-  const utils = renderWithProviders(<ViewAllMembers />);
+  const Component = await ViewAllMembers();
+  const utils = renderWithProviders(Component);
 
   return {
     user,
@@ -26,29 +26,12 @@ function setup() {
 
 describe('ViewAllMembers', () => {
   test('renders the page title correctly', async () => {
-    renderWithProviders(<ViewAllMembers />);
+    await setup();
     expect(await screen.findByText('All Members')).toBeInTheDocument();
   });
 
-  test('displays loading animation when data is being fetched', async () => {
-    renderWithProviders(<ViewAllMembers />);
-    expect(await screen.findByRole('progressbar')).toBeInTheDocument();
-  });
-
-  test('displays error message when there is an error fetching data', async () => {
-    viewAllMembersPageServer.use(
-      http.get(MEMBERS_MATCHER, () => {
-        return new HttpResponse(null, { status: 500 });
-      }),
-    );
-    renderWithProviders(<ViewAllMembers />);
-    expect(
-      await screen.findByText(/Error loading members/),
-    ).toBeInTheDocument();
-  });
-
   test('renders table with correct headers', async () => {
-    renderWithProviders(<ViewAllMembers />);
+    await setup();
     const table = await screen.findByRole('table');
     const headers = within(table).getAllByRole('columnheader');
     expect(headers).toHaveLength(5);
@@ -60,7 +43,7 @@ describe('ViewAllMembers', () => {
   });
 
   test('renders member data correctly in table rows', async () => {
-    renderWithProviders(<ViewAllMembers />);
+    await setup();
     const table = await screen.findByRole('table');
     const rows = within(table).getAllByRole('row');
     expect(rows).toHaveLength(3); // 1 header row + 2 data rows
@@ -75,14 +58,14 @@ describe('ViewAllMembers', () => {
   });
 
   test('opens edit dialog when edit button is clicked', async () => {
-    const { user } = setup();
+    const { user } = await setup();
     const editButtons = await screen.findAllByRole('button', { name: 'Edit' });
     await user.click(editButtons[0]);
     expect(screen.getByText('Edit Member')).toBeInTheDocument();
   });
 
   test('updates member data in edit dialog', async () => {
-    const { user } = setup();
+    const { user } = await setup();
     const editButtons = await screen.findAllByRole('button', { name: 'Edit' });
     await user.click(editButtons[0]);
 
@@ -94,7 +77,7 @@ describe('ViewAllMembers', () => {
   });
 
   test('updates member', async () => {
-    const { user } = setup();
+    const { user } = await setup();
     const editButtons = await screen.findAllByRole('button', { name: 'Edit' });
     await user.click(editButtons[0]);
 
@@ -102,8 +85,8 @@ describe('ViewAllMembers', () => {
     await user.clear(firstNameInput);
     await user.type(firstNameInput, 'Jim');
 
-    const saveButton = screen.getByRole('button', { name: 'Save' });
-    await user.click(saveButton);
+    const updateButton = screen.getByRole('button', { name: 'Update' });
+    await user.click(updateButton);
 
     await waitFor(() => {
       expect(screen.queryByText('Edit Member')).not.toBeInTheDocument();
@@ -113,7 +96,7 @@ describe('ViewAllMembers', () => {
   });
 
   test('closes edit dialog when cancel button is clicked', async () => {
-    const { user } = setup();
+    const { user } = await setup();
 
     const editButtons = await screen.findAllByRole('button', { name: 'Edit' });
     await user.click(editButtons[0]);
@@ -127,7 +110,7 @@ describe('ViewAllMembers', () => {
   });
 
   test('deletes member when confirmation is accepted', async () => {
-    const { user } = setup();
+    const { user } = await setup();
     const deleteButtons = await screen.findAllByRole('button', {
       name: 'Delete',
     });
@@ -142,7 +125,7 @@ describe('ViewAllMembers', () => {
       expect(screen.queryByText('John Doe')).not.toBeInTheDocument();
     });
 
-    // Verify that the member is no longer in the list after refetch
+    // Verify that the member is no longer in the list after re-fetch
     const table = screen.getByRole('table');
     const rows = within(table).getAllByRole('row');
     expect(rows).toHaveLength(2); // 1 header row + 1 remaining data row
@@ -151,7 +134,7 @@ describe('ViewAllMembers', () => {
   });
 
   test('does not delete member when confirmation is canceled', async () => {
-    const { user } = setup();
+    const { user } = await setup();
     const deleteButtons = await screen.findAllByRole('button', {
       name: 'Delete',
     });

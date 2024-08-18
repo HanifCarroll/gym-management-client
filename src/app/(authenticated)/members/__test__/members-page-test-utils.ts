@@ -31,14 +31,15 @@ export const viewAllMembersPageServer = setupServer(
   http.get(MEMBERS_MATCHER, () => {
     return HttpResponse.json(mockMembers);
   }),
-  http.patch(`*${MEMBERS_URL}/:id`, async ({ request }) => {
+  http.patch(`*${MEMBERS_URL}/:id`, async ({ request, params }) => {
     const updatedMember = (await request.json()) as UpdateMemberData;
-    const { firstName } = updatedMember;
-    if (!firstName) {
-      throw new Error('First name is required for this test');
+    const { id } = params;
+    const index = mockMembers.findIndex((member) => member.id === id);
+    if (index !== -1) {
+      mockMembers[index] = { ...mockMembers[index], ...updatedMember };
+      return HttpResponse.json(mockMembers[index]);
     }
-    mockMembers[0].firstName = firstName;
-    return HttpResponse.json(updatedMember);
+    return new HttpResponse(null, { status: 404 });
   }),
   http.delete(`*${MEMBERS_URL}/:id`, ({ params }) => {
     const { id } = params;
@@ -47,6 +48,6 @@ export const viewAllMembersPageServer = setupServer(
   }),
   http.all('*', ({ request }) => {
     console.warn(`Unhandled ${request.method} request to ${request.url}`);
-    return HttpResponse.json({ error: 'Not Found' }, { status: 404 });
+    return new HttpResponse(null, { status: 404 });
   }),
 );
