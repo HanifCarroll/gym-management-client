@@ -9,18 +9,25 @@ import {
   Select,
   SelectChangeEvent,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import { useCheckInPage } from '@/app/(authenticated)/check-in/use-check-in-page';
-import { ColDef, ValueFormatterParams } from 'ag-grid-community';
 import { LoadingAnimation } from '@/app/ui/components';
-import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { CheckIn, Member } from '@/core/entities';
+import {
+  ColDef,
+  GridApi,
+  GridReadyEvent,
+  ValueFormatterParams,
+} from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { AgGridReact } from 'ag-grid-react';
 import { format, parseISO } from 'date-fns';
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
-const columnDefs: ColDef<CheckIn>[] = [
+const getColumnDefs = (isMobile: boolean): ColDef<CheckIn>[] => [
   {
     field: 'dateTime',
     headerName: 'Date',
@@ -36,7 +43,7 @@ const columnDefs: ColDef<CheckIn>[] = [
     sortable: true,
     filter: true,
     valueFormatter: (params: ValueFormatterParams) =>
-      format(parseISO(params.value), 'HH:mm:ss'),
+      format(parseISO(params.value), 'HH:mm'),
     cellStyle: { display: 'flex', alignItems: 'center' },
   },
   {
@@ -59,6 +66,7 @@ const columnDefs: ColDef<CheckIn>[] = [
     sortable: true,
     filter: true,
     cellStyle: { display: 'flex', alignItems: 'center' },
+    hide: isMobile,
   },
 ];
 
@@ -75,6 +83,7 @@ const MemberSelect: React.FC<{
       value={selectedMemberId}
       label="Select Member"
       onChange={onMemberChange}
+      variant="outlined"
     >
       {members.map((member) => (
         <MenuItem key={member.id} value={member.id}>
@@ -85,25 +94,45 @@ const MemberSelect: React.FC<{
   </FormControl>
 );
 
-const CheckInGrid: React.FC<{ checkIns: CheckIn[] }> = ({ checkIns }) => {
+const CheckInGrid: React.FC<{ checkIns: CheckIn[]; isMobile: boolean }> = ({
+  checkIns,
+  isMobile,
+}) => {
+  const [gridApi, setGridApi] = useState<GridApi | null>(null);
+
+  const onGridReady = useCallback((params: GridReadyEvent) => {
+    setGridApi(params.api);
+  }, []);
+
+  useEffect(() => {
+    if (gridApi) {
+      gridApi.sizeColumnsToFit();
+    }
+  }, [gridApi, isMobile]);
+
   return (
     <div
       className="ag-theme-alpine"
       data-testid="ag-grid"
-      style={{ height: 400, width: '100%' }}
+      style={{ height: 'calc(100vh - 250px)', width: '100%' }}
     >
       <AgGridReact
         rowData={checkIns}
         rowHeight={50}
-        columnDefs={columnDefs}
+        columnDefs={getColumnDefs(isMobile)}
         pagination={true}
         paginationPageSize={20}
-        onGridReady={(event) => event.api.sizeColumnsToFit()}
+        onGridReady={onGridReady}
+        domLayout="autoHeight"
       />
     </div>
   );
 };
+
 export default function CheckInPage() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const {
     checkInMember,
     filteredCheckIns,
@@ -124,7 +153,7 @@ export default function CheckInPage() {
   }
 
   return (
-    <Box sx={{ maxWidth: 1200, margin: 'auto', p: 2 }}>
+    <Box sx={{ maxWidth: '100%', margin: 'auto', p: 2 }}>
       <Typography variant="h4" gutterBottom>
         Gym Check-In System
       </Typography>
@@ -138,12 +167,12 @@ export default function CheckInPage() {
           variant="contained"
           onClick={checkInMember}
           disabled={isCheckInPending || !selectedMemberId}
-          sx={{ mt: 2 }}
+          sx={{ mt: 2, width: '100%' }}
         >
           Check In
         </Button>
       </Box>
-      <CheckInGrid checkIns={filteredCheckIns} />
+      <CheckInGrid checkIns={filteredCheckIns} isMobile={isMobile} />
     </Box>
   );
 }

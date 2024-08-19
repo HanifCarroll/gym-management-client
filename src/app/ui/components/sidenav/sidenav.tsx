@@ -1,12 +1,14 @@
 'use client';
 
-import CardMembershipIcon from '@mui/icons-material/CardMembership';
-import HistoryIcon from '@mui/icons-material/History';
-import HowToRegIcon from '@mui/icons-material/HowToReg';
-import LogoutIcon from '@mui/icons-material/Logout';
-import PaymentIcon from '@mui/icons-material/Payment';
-import PeopleIcon from '@mui/icons-material/People';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import {
+  CardMembership as CardMembershipIcon,
+  History as HistoryIcon,
+  HowToReg as HowToRegIcon,
+  Logout as LogoutIcon,
+  Payment as PaymentIcon,
+  People as PeopleIcon,
+  PersonAdd as PersonAddIcon,
+} from '@mui/icons-material';
 import {
   Box,
   Divider,
@@ -15,6 +17,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  SvgIcon,
   Typography,
 } from '@mui/material';
 import { useAuth } from '@/app/ui/context/auth-context';
@@ -24,63 +27,136 @@ import React from 'react';
 
 const DRAWER_WIDTH = 240;
 
-const MENU_ITEMS = [
-  { text: 'Register Member', icon: <PersonAddIcon />, path: '/register' },
-  { text: 'Member List', icon: <PeopleIcon />, path: '/members' },
-  { text: 'Process Payment', icon: <PaymentIcon />, path: '/payment' },
-  { text: 'Payment History', icon: <HistoryIcon />, path: '/payment-history' },
-  { text: 'Membership Plans', icon: <CardMembershipIcon />, path: '/plans' },
-  { text: 'Member Check-in', icon: <HowToRegIcon />, path: '/check-in' },
+type MenuItem = {
+  text: string;
+  icon: typeof SvgIcon;
+  path: string;
+};
+
+const MENU_ITEMS: MenuItem[] = [
+  { text: 'Register Member', icon: PersonAddIcon, path: '/register' },
+  { text: 'Member List', icon: PeopleIcon, path: '/members' },
+  { text: 'Process Payment', icon: PaymentIcon, path: '/payment' },
+  { text: 'Payment History', icon: HistoryIcon, path: '/payment-history' },
+  { text: 'Membership Plans', icon: CardMembershipIcon, path: '/plans' },
+  { text: 'Member Check-in', icon: HowToRegIcon, path: '/check-in' },
 ];
 
-const Sidenav = () => {
+type MenuItemProps = MenuItem & {
+  isSelected: boolean;
+  onClick?: () => void;
+};
+
+const MenuItem: React.FC<MenuItemProps> = ({
+  text,
+  icon: Icon,
+  path,
+  isSelected,
+  onClick,
+}) => (
+  <ListItemButton
+    component={Link}
+    href={path}
+    selected={isSelected}
+    onClick={onClick}
+  >
+    <ListItemIcon>
+      <Icon />
+    </ListItemIcon>
+    <ListItemText primary={text} />
+  </ListItemButton>
+);
+
+type LogoutButtonProps = {
+  onClick: () => void;
+};
+
+const LogoutButton: React.FC<LogoutButtonProps> = ({ onClick }) => (
+  <ListItemButton onClick={onClick}>
+    <ListItemIcon>
+      <LogoutIcon />
+    </ListItemIcon>
+    <ListItemText primary="Logout" />
+  </ListItemButton>
+);
+
+type DrawerContentProps = {
+  onItemClick?: () => void;
+};
+
+const DrawerContent: React.FC<DrawerContentProps> = ({ onItemClick }) => {
   const pathname = usePathname();
   const { logout } = useAuth();
 
   return (
-    <Drawer
-      variant="permanent"
-      sx={{
-        width: DRAWER_WIDTH,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
-          width: DRAWER_WIDTH,
-          boxSizing: 'border-box',
-          display: 'flex',
-          flexDirection: 'column',
-        },
-      }}
-    >
-      <Box sx={{ overflow: 'auto' }}>
-        <Box sx={{ p: 2 }}>
-          <Typography variant="h6" component="div">
-            Gym Management
-          </Typography>
-        </Box>
-        <Divider />
-        <List>
-          {MENU_ITEMS.map((item) => (
-            <ListItemButton
-              key={item.text}
-              component={Link}
-              href={item.path}
-              selected={pathname === item.path}
-            >
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
-            </ListItemButton>
-          ))}
-        </List>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <Box sx={{ p: 2 }}>
+        <Typography variant="h6" component="div">
+          Gym Management
+        </Typography>
       </Box>
+      <Divider />
+      <List>
+        {MENU_ITEMS.map(({ text, icon, path }) => (
+          <MenuItem
+            key={text}
+            text={text}
+            icon={icon}
+            path={path}
+            isSelected={pathname === path}
+            onClick={onItemClick}
+          />
+        ))}
+      </List>
       <Box sx={{ mt: 'auto' }}>
         <Divider />
-        <ListItemButton onClick={logout}>
-          <ListItemIcon>
-            <LogoutIcon />
-          </ListItemIcon>
-          <ListItemText primary="Logout" />
-        </ListItemButton>
+        <LogoutButton onClick={logout} />
       </Box>
+    </Box>
+  );
+};
+
+type SidenavProps = {
+  isMobile: boolean;
+  mobileOpen: boolean;
+  onClose: () => void;
+};
+
+const Sidenav: React.FC<SidenavProps> = ({ isMobile, mobileOpen, onClose }) => {
+  const drawerProps = {
+    sx: {
+      width: DRAWER_WIDTH,
+      flexShrink: 0,
+      '& .MuiDrawer-paper': { width: DRAWER_WIDTH, boxSizing: 'border-box' },
+    },
+  };
+
+  if (!isMobile) {
+    return (
+      <Drawer
+        variant="permanent"
+        sx={{
+          ...drawerProps.sx,
+          display: { xs: 'none', sm: 'block' },
+        }}
+      >
+        <DrawerContent />
+      </Drawer>
+    );
+  }
+
+  return (
+    <Drawer
+      variant="temporary"
+      open={mobileOpen}
+      onClose={onClose}
+      ModalProps={{ keepMounted: true }}
+      sx={{
+        ...drawerProps.sx,
+        display: { xs: 'block', sm: 'none' },
+      }}
+    >
+      <DrawerContent onItemClick={onClose} />
     </Drawer>
   );
 };
