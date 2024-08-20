@@ -23,6 +23,7 @@ import {
   TextField,
   Tooltip,
 } from '@mui/material';
+import { useSnackbar } from '@/app/ui/context';
 import { Member, MemberStatus, UpdateMemberData } from '@/core/entities';
 import React, { useState } from 'react';
 
@@ -35,6 +36,7 @@ export default function MembersTable({
 }: MembersTableProps) {
   const [members, setMembers] = useState<Member[]>(initialMembers);
   const [editingMember, setEditingMember] = useState<Member | null>(null);
+  const { showSnackbar } = useSnackbar();
 
   const handleEditClick = (member: Member) => {
     setEditingMember(member);
@@ -51,6 +53,7 @@ export default function MembersTable({
         setMembers(members.filter((member) => member.id !== id));
       } else {
         console.error('Failed to delete member');
+        showSnackbar('An error occurred while deleting the member.', 'error');
       }
     }
   };
@@ -80,6 +83,7 @@ export default function MembersTable({
       handleEditClose();
     } else {
       console.error('Failed to update member');
+      showSnackbar('An error occurred while updating the member.', 'error');
     }
   };
 

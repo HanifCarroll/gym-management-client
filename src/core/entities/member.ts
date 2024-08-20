@@ -11,6 +11,11 @@ export interface Member {
   updatedAt: string;
 }
 
-export type CreateMemberData = Omit<Member, 'id' | 'createdAt' | 'updatedAt'>;
+export type CreateMemberData = Omit<
+  Member,
+  'id' | 'status' | 'createdAt' | 'updatedAt'
+>;
 
-export type UpdateMemberData = Partial<CreateMemberData>;
+export type UpdateMemberData = Partial<CreateMemberData> & {
+  status?: MemberStatus;
+};
