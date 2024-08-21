@@ -1,5 +1,3 @@
-import { ApiMembershipPlanRepository } from '../../../core/repositories';
-import { MembershipPlanServiceImpl } from '../../../core/services';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@/app/ui/context';
 import {
@@ -7,9 +5,11 @@ import {
   MembershipPlan,
   UpdateMembershipPlanData,
 } from '@/core/entities';
+import { MembershipPlanRepository } from '@/core/repositories';
+import { MembershipPlanService } from '@/core/services';
 
-const membershipPlanRepository = new ApiMembershipPlanRepository();
-const membershipPlanService = new MembershipPlanServiceImpl(
+const membershipPlanRepository = new MembershipPlanRepository();
+const membershipPlanService = new MembershipPlanService(
   membershipPlanRepository,
 );
 

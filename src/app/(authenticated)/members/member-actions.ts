@@ -1,12 +1,12 @@
 'use server';
 
 import { Member, UpdateMemberData } from '@/core/entities';
-import { ApiMemberRepository } from '@/core/repositories';
-import { MemberServiceImpl } from '@/core/services';
+import { MemberRepository } from '@/core/repositories';
+import { MemberService } from '@/core/services';
 import { revalidatePath } from 'next/cache';
 
-const memberRepository = new ApiMemberRepository();
-const memberService = new MemberServiceImpl(memberRepository);
+const memberRepository = new MemberRepository();
+const memberService = new MemberService(memberRepository);
 
 export async function updateMember(
   id: string,

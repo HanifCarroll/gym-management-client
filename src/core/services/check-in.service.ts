@@ -1,10 +1,10 @@
 import { CheckIn } from '@/core/entities';
-import { ApiCheckInRepository } from '@/core/repositories';
+import { CheckInRepository } from '@/core/repositories';
 
-export class CheckInServiceImpl {
-  private checkInRepository: ApiCheckInRepository;
+export class CheckInService {
+  private checkInRepository: CheckInRepository;
 
-  constructor(checkInRepository: ApiCheckInRepository) {
+  constructor(checkInRepository: CheckInRepository) {
     this.checkInRepository = checkInRepository;
   }
 

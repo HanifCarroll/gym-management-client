@@ -2,11 +2,11 @@
 
 import { RegisterMemberState } from '@/app/(authenticated)/register/register-member-form';
 import { CreateMemberData } from '@/core/entities';
-import { ApiMemberRepository } from '@/core/repositories';
-import { MemberServiceImpl } from '@/core/services';
+import { MemberRepository } from '@/core/repositories';
+import { MemberService } from '@/core/services';
 
-const memberRepository = new ApiMemberRepository();
-const memberService = new MemberServiceImpl(memberRepository);
+const memberRepository = new MemberRepository();
+const memberService = new MemberService(memberRepository);
 
 export async function registerMember(
   state: RegisterMemberState,

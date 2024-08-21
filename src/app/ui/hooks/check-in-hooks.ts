@@ -1,11 +1,11 @@
-import { ApiCheckInRepository } from '../../../core/repositories';
-import { CheckInServiceImpl } from '../../../core/services';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/core/api-client';
 import { CheckIn } from '@/core/entities';
+import { CheckInRepository } from '@/core/repositories';
+import { CheckInService } from '@/core/services';
 
-const checkInRepository = new ApiCheckInRepository(apiClient);
-const checkInService = new CheckInServiceImpl(checkInRepository);
+const checkInRepository = new CheckInRepository(apiClient);
+const checkInService = new CheckInService(checkInRepository);
 
 export const useGetCheckIns = () => {
   return useQuery<CheckIn[], Error>({

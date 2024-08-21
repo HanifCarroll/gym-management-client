@@ -1,11 +1,11 @@
 import MembersTable from './members-table';
 import { Box, Container, Typography } from '@mui/material';
-import { ApiMemberRepository } from '@/core/repositories';
-import { MemberServiceImpl } from '@/core/services';
+import { MemberRepository } from '@/core/repositories';
+import { MemberService } from '@/core/services';
 
 async function getMembers() {
-  const memberRepository = new ApiMemberRepository();
-  const memberService = new MemberServiceImpl(memberRepository);
+  const memberRepository = new MemberRepository();
+  const memberService = new MemberService(memberRepository);
   return memberService.getMembers();
 }
 

@@ -6,7 +6,7 @@ import {
 } from '@/core/entities';
 import { AxiosInstance } from 'axios';
 
-export class ApiMembershipPlanRepository {
+export class MembershipPlanRepository {
   private apiClient: AxiosInstance;
 
   constructor(apiClientInstance: AxiosInstance = apiClient) {
